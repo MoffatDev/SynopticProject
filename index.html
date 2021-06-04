@@ -1,1 +1,32 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synoptic Project</title>
 
+    <link rel = "stylesheet" href = "./style.css">
+    <link rel = "stylesheet" href = "./libs/v6.5.0-dist/ol.css">
+</head>
+<body>
+
+    <div id = 'map' class = 'map'> </div>
+
+    <div id = 'sidebar' class = 'sidebar'>
+        <a href = "javascript:void(0)" class = "collapseButton" onclick="closeBar()">&times;</a>
+        <a href = "#">THING 1</a>
+        <a href = "#">THING 2</a>
+        <a href = "#">THING 3</a>
+        <a href = "#">THING 4</a>
+    </div>
+
+    <div id="main">
+        <button class="openButton" onclick="openBar()">&#9776; Open Sidebar</button>
+      </div>
+
+
+    <script src = './main.js'></script>
+    <script src = './libs/v6.5.0-dist/ol.js'></script>
+    
+</body>
+</html>
