@@ -1,22 +1,79 @@
-window.onload = init;
+window.onload = init; // Intialize Map upon Window Load.
 
-function init() {
-    const map = new ol.Map({
-        view: new ol.View({
-            center: [ -9047783.58 , -496188.42] , 
-            zoom: 4 , 
-            maxZoom: 10 , 
-            minZoom: 4
-        }) , 
+function init() { // Initialization Function.
 
-        layers: [
-            new ol.layer.Tile({
-                source: new ol.source.OSM()
-            })
-        ], 
-
-        target: 'map'
+    // Map Object.
+    const map = new ol.Map({  // Calling new Map Instance from OpenLayers (OL) Library.
+        view: new ol.View({  // Creating the View. 
+            center: [ -9047783.58 , -496188.42] ,   // Lobitos Coords.
+            zoom: 14 , // Initial Zoom Level (x14)
+            maxZoom: 18 , // Max Zoom Level.
+            minZoom: 12  // Min Zoom Level.
+        }) ,  
+        target: 'map'  // Bind to HTML Element.
     });
+
+    // Objects for different Layer Views; Standard , Humanitarian & HighContrast.
+
+    // Standard Layer - Map Initally loaded in with.
+    const STANDARD = new ol.layer.Tile({ 
+        source: new ol.source.OSM() ,  // Source from OL Library.
+        visible: true,   // Visibilty to true for inception.
+        title: 'OSMStandard'  // Bind to HTML Element.
+    })
+
+    // Humanitarain Layer - More detailed Colour Mapping.
+    const HUMANITARIAN = new ol.layer.Tile({
+        source: new ol.source.OSM({  // Source from external URL.
+            url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'  // Retrive as jpg.
+        }) , 
+        visible: false ,  // Visibilty to false for Inception.
+        title: 'OSMHumanitarian' // Bind to HTML Element.
+    })
+
+    // HighContrast Layer - Black & White Scheme.
+    const HIGHCONSTRAST = new ol.layer.Tile({
+        source: new ol.source.XYZ({  // Source from External URL.
+            url: 'https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png' ,  // Retrive as PNG.
+            
+            // For this Layer, attributions are necessary.
+            attributions: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
+        }) , 
+        visible: false ,  // Visibilty to false for Inception.
+        title: 'HIGHCONTRAST'  // Bind to HTML Element.
+    })
+
+    // Group for all Layers. 
+    const layers = new ol.layer.Group({
+        layers: [
+            STANDARD ,
+            HUMANITARIAN,
+            HIGHCONSTRAST
+        ]
+    })
+
+    map.addLayer(layers);  // Add Layer Group to Map.
+
+    // -- Layer View Switching Logic -- 
+
+    // Field for all Avaliable Layers on Webpage.
+    const selectLayers = document.querySelectorAll('.sidebar > input[type=radio]');
+
+    // Iterate Through all Layers.
+    for (let selectedLayer of selectLayers) {
+        selectedLayer.addEventListener('change' , // Listen for Change in state.
+        function() {
+            let selectedLayerValue = this.value;  // Get Layer Value
+
+            // Iterate through Layer Group
+            layers.getLayers().forEach(function(element , index , array) {
+                let layerTitle = element.get('title');
+
+                // If Selected Layer is not currently Displayed, set Visibility to True, i.e. Display.
+                element.setVisible(layerTitle === selectedLayerValue);
+            })
+        })
+    }
 
     map.on('click' , function(e) {
 
@@ -24,15 +81,3 @@ function init() {
 
     })
 }
-
-/* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
-function openBar() {
-    document.getElementById("sidebar").style.width = "23%";
-    document.getElementById("main").style.marginRight = "23%";
-  }
-  
-  /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
-  function closeBar() {
-    document.getElementById("sidebar").style.width = "0";
-    document.getElementById("main").style.marginRight = "0";
-  }

@@ -10,23 +10,25 @@
 </head>
 <body>
 
-    <div id = 'map' class = 'map'> </div>
+    <div class = "container">
+        <div class = "grid-1">
+            <div class = "sidebar">
+                <h2>Select Layer View</h2>
 
-    <div id = 'sidebar' class = 'sidebar'>
-        <a href = "javascript:void(0)" class = "collapseButton" onclick="closeBar()">&times;</a>
-        <a href = "#">THING 1</a>
-        <a href = "#">THING 2</a>
-        <a href = "#">THING 3</a>
-        <a href = "#">THING 4</a>
+                <input type = "radio" name = 'selectLayer' value = 'OSMStandard' checked>Standard<br>
+                <input type = "radio" name = 'selectLayer' value = 'OSMHumanitarian'>Humanitarian<br>
+                <input type = "radio" name = 'selectLayer' value = 'HIGHCONTRAST'>High Contrast<br>
+            </div>
+        </div>
+
+        <div class = "grid-2">
+            <div id = 'map' class = 'map'> </div>
+        </div>
     </div>
-
-    <div id="main">
-        <button class="openButton" onclick="openBar()">&#9776; Open Sidebar</button>
-      </div>
-
 
     <script src = './main.js'></script>
     <script src = './libs/v6.5.0-dist/ol.js'></script>
+
     
 </body>
 </html>
