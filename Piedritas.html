@@ -1,0 +1,34 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piedritas Map</title>
+
+    <link rel = "stylesheet" href = "./style.css">
+    <link rel = "stylesheet" href = "./libs/v6.5.0-dist/ol.css">
+</head>
+<body>
+
+    <div class = "container">
+        <div class = "grid-1">
+            <div class = "sidebar">
+                <h2>Select Layer View</h2>
+
+                <input type = "radio" name = 'selectLayer' value = 'OSMStandard' checked>Standard<br>
+                <input type = "radio" name = 'selectLayer' value = 'OSMHumanitarian'>Humanitarian<br>
+                <input type = "radio" name = 'selectLayer' value = 'HIGHCONTRAST'>High Contrast<br>
+            </div>
+        </div>
+
+        <div class = "grid-2">
+            <div id = 'map' class = 'map'> </div>
+        </div>
+    </div>
+
+    <script src = './PiedritasJS.js'></script>
+    <script src = './libs/v6.5.0-dist/ol.js'></script>
+
+    
+</body>
+</html>
