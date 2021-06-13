@@ -37,7 +37,7 @@ async function handleRes(res){
   console.log("Server JSON response: ", returned);
   alert("Server JSON response: " + JSON.stringify(returned));
 
-  //Determine what response it is dealing with
+  /*//Determine what response it is dealing with
   switch(true){
     //Signup
     case returned.hasOwnProperty('signup'):
@@ -51,5 +51,5 @@ async function handleRes(res){
     default:
       console.err('Invalid response');
 
-  }
+  }*/
 }

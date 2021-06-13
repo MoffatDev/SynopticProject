@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const jsonParser = require('body-parser').json(); //Setting up JsonParser
+const crypto = require('crypto');
 //------------------------------IO Setup------------------------------
 const fs = require('fs');
 const dbPaths = {
@@ -13,9 +14,9 @@ const dbPaths = {
 //------------------------------Server start------------------------------
 //Loading up databases
 let db = {
-  users: [],
-  notices: [],
-  mapPoints: []
+  users: {},
+  notices: {},
+  mapPoints: {}
 };
 
 //Loop through all db files
@@ -30,7 +31,7 @@ for (element in dbPaths){
   //If it doesn't create it
   }catch (err) {
     console.error("WARN: File doesn't exist creating empty one");
-    fs.writeFileSync(path, JSON.stringify(db[element]), 'utf8');
+    fs.writeFileSync(dbPaths[element], JSON.stringify(db[element]), 'utf8');
   }
   //Load in database file
   try{
@@ -48,7 +49,7 @@ for (element in dbPaths){
 //------------------------------Serving website------------------------------
 app.use(express.static('public'));
 app.listen(3000, function () {
-  console.log('Serving website on http://localhost:3000');
+  console.log('Serving website on localhost:3000');
 });
 
 
@@ -64,13 +65,61 @@ app.post('/signup', jsonParser, function (req, res) {
 
 //------------------------------Signup stuff------------------------------
 function signup(data){
-  //signup using username + hashed password + salt + name
-
-  //Check if username already in database
-  //If so reject
-  //Else save to database and return access cookie
-  return {signup : false, dataRecieved: data}
+  let response = {type: "signup", success: false, reason: ""}
+  //If over13
+  if(data.over13){
+    //If username not already in database
+    if(!db.users.hasOwnProperty(data.username.toLowerCase())){
+      //If password matches minimum requrements
+      if(checkPassFormat(data.password)){
+        //Generate salt and hash password
+        let salt = requestNewSalt();
+        let hashPass = hashPassword(data.password, salt).toString();
+        //Save data
+        db.users[data.username.toLowerCase()] = {hashPass: hashPass, salt: salt
+          , name: data.name, over13: data.over13};
+        saveToFile(dbPaths.users, JSON.stringify(db.users));
+        response.success = true;
+      }else{
+        response.reason = "Password doesn't meet minimum requirements, see below:"
+        + "\n - At least 8 Characters Long"
+        + "\n - Include at least one a-z character"
+        + "\n - Include at least one 0-9 digit"
+        + "\n - Include at least one other/special character";
+      }
+    }else{
+      response.reason = "Username already in use";
+    }
+  }else{
+    response.reason = "You must be over 13 to use this service";
+  }
+  return response;
 }
+
+function checkPassFormat(password){
+  let hasLetter = false;
+  let hasDigit = false;
+  let hasSpecial = false;
+  //Password good length
+  if(password.length >= 8){
+    //Loop through each character
+    for(let char of password){
+      //Contains 1 latin character
+      if(/[a-z]|[A-Z]/.test(char)){
+        hasLetter = true;
+      //Contains 1 arabic numeral
+      }else if(/\d/.test(char)){
+        hasDigit = true;
+      //Contains 1 other character
+      }else if(/\W/.test(char)){
+        hasSpecial = true;
+      }
+    }
+  }
+  return hasLetter && hasDigit && hasSpecial;
+}
+
+
 
 /*
 The following functions "saveToFile" & "readFromFile" contain code from
@@ -106,13 +155,10 @@ function login(){
     //return bad username
 }
 
-function requestSalt(){
-  //if username in database
-    //return associated salt
-  //else
-    //return null
+function requestNewSalt(){
+  return crypto.randomBytes(256).toString();
 }
 
-function requestNewSalt(){
-  //generate new salt and return
+function hashPassword(password, salt){
+  return crypto.pbkdf2Sync(password, salt, 100000, 256, "sha512");
 }
