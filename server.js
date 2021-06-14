@@ -18,9 +18,6 @@ let db = {
   notices: {},
   mapPoints: {}
 };
-
-console.log(generateAccessToken());
-
 //Loop through all db files
 for (element in dbPaths){
   console.log("Loading in '" + element + "' database from: '" + dbPaths[element]);
@@ -86,10 +83,11 @@ function signup(data){
             //Generate salt and hash password
             let salt = generateSalt();
             let hashPass = hashPassword(data.password, salt).toString();
-            let token = generateAccessToken(data.username);
+            let token = generateAccessToken(data.username.toLowerCase());
             //Save data
             db.users[data.username.toLowerCase()] = {hashPass: hashPass, salt: salt
-              , name: data.name, over13: data.over13, tokens: [token]};
+              , name: data.name, over13: data.over13, townSelection: data.townSelection
+              ,tokens: [token]};
             saveToFile(dbPaths.users, JSON.stringify(db.users));
             response.success = true;
             response.token = token;

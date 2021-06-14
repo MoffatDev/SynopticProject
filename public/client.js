@@ -6,6 +6,7 @@ function signup(){
   form.password = document.getElementById("password").value;
   form.name = document.getElementById("name").value;
   form.over13 = document.getElementById("over13").checked;
+  form.townSelection = document.getElementById("townSelection").value;
   //Submit data to server
   sendPost("signup", form);
 }
