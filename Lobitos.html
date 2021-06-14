@@ -19,11 +19,46 @@
                 <input type = "radio" name = 'selectLayer' value = 'OSMStandard' checked>Standard<br>
                 <input type = "radio" name = 'selectLayer' value = 'OSMHumanitarian'>Humanitarian<br>
                 <input type = "radio" name = 'selectLayer' value = 'HIGHCONTRAST'>High Contrast<br>
+
+                <p id = "LONG"></p>
+                <p id = "LAT"></p>
+
+                <div class = "Coord Form">
+
+                    <br>
+
+                    <h2>Check Hotspot</h2>
+
+                    <form>
+                        <label for="UserLONG">Longitude:</label><br>
+                        <input type="text" id="UserLONG" name="UserLONG"><br>
+                        <label for="UserLAT">Latitude:</label><br>
+                        <input type="text" id="UserLAT" name="UserLAT"><br>
+                        <label for="UserLAT">Name:</label><br>
+                        <input type="text" id="UserNAME" name="UserNAME"><br>
+                        <label for="UserEL">Electricity Status:</label><br>
+                        <input type="text" id="UserEL" name="UserEL"><br> 
+                        <label for="UserWAT">Water Status:</label><br>
+                        <input type="text" id="UserWAT" name="UserWAT"><br>
+                        
+                        <button type = "reset" onclick = "userPoint(UserLONG , UserLAT)">Check Hotspot</button>
+                        <button type = "reset" onclick = "addPoint(UserLONG , UserLAT, UserNAME , UserEL , UserWAT)">Add Hotspot</button>
+                    </form>
+
+                    <p id = "Result"></p>
+
+                </div>
             </div>
+
         </div>
 
         <div class = "grid-2">
-            <div id = 'map' class = 'map'> </div>
+            <div id="map" class="map"></div>
+
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="popup-content"></div>
+            </div>
         </div>
     </div>
 
