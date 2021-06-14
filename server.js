@@ -19,6 +19,8 @@ let db = {
   mapPoints: {}
 };
 
+console.log(generateAccessToken());
+
 //Loop through all db files
 for (element in dbPaths){
   console.log("Loading in '" + element + "' database from: '" + dbPaths[element]);
@@ -61,37 +63,54 @@ app.post('/signup', jsonParser, function (req, res) {
   res.json(response);
 });
 
+app.post('/login', jsonParser, function (req, res) {
+  console.log("Login recieved: ", req.body);
+  let response = login(req.body);
+  console.log('Response: ', response);
+  res.json(response);
+});
+
 
 
 //------------------------------Signup stuff------------------------------
 function signup(data){
-  let response = {type: "signup", success: false, reason: ""}
-  //If over13
-  if(data.over13){
-    //If username not already in database
-    if(!db.users.hasOwnProperty(data.username.toLowerCase())){
-      //If password matches minimum requrements
-      if(checkPassFormat(data.password)){
-        //Generate salt and hash password
-        let salt = requestNewSalt();
-        let hashPass = hashPassword(data.password, salt).toString();
-        //Save data
-        db.users[data.username.toLowerCase()] = {hashPass: hashPass, salt: salt
-          , name: data.name, over13: data.over13};
-        saveToFile(dbPaths.users, JSON.stringify(db.users));
-        response.success = true;
+  let response = {type: "signup", success: false, reason: "", token: ""};
+  if(data.name.length >0){
+    if(data.username.length >= 5){
+      //If over13
+      if(data.over13){
+        //If username not already in database
+        if(!db.users.hasOwnProperty(data.username.toLowerCase())){
+          //If password matches minimum requrements
+          if(checkPassFormat(data.password)){
+            //Generate salt and hash password
+            let salt = generateSalt();
+            let hashPass = hashPassword(data.password, salt).toString();
+            let token = generateAccessToken(data.username);
+            //Save data
+            db.users[data.username.toLowerCase()] = {hashPass: hashPass, salt: salt
+              , name: data.name, over13: data.over13, tokens: [token]};
+            saveToFile(dbPaths.users, JSON.stringify(db.users));
+            response.success = true;
+            response.token = token;
+          }else{
+            response.reason = "Password doesn't meet minimum requirements, see below:"
+            + "\n - At least 8 Characters Long"
+            + "\n - Include at least one a-z character"
+            + "\n - Include at least one 0-9 digit"
+            + "\n - Include at least one other/special character";
+          }
+        }else{
+          response.reason = "Username already in use";
+        }
       }else{
-        response.reason = "Password doesn't meet minimum requirements, see below:"
-        + "\n - At least 8 Characters Long"
-        + "\n - Include at least one a-z character"
-        + "\n - Include at least one 0-9 digit"
-        + "\n - Include at least one other/special character";
+        response.reason = "You must be over 13 to use this service";
       }
     }else{
-      response.reason = "Username already in use";
+      response.reason = "Username must be 5 characters or longer";
     }
   }else{
-    response.reason = "You must be over 13 to use this service";
+    response.reason = "Name must be 1 character or longer";
   }
   return response;
 }
@@ -144,18 +163,44 @@ async function readFromFile(path){
   });
 }
 
-function login(){
-  //Get username + hashedpassword
-  //If username in database
-    //If hashedpassword correct
-      //return access cookie
-    //else
-      //return bad password
-  //Else
-    //return bad username
+function login(data){
+  let response = {type: "login", success: false,
+  reason: "Please double check your username & password", token: ""};
+  //Check if username exists
+  if(db.users.hasOwnProperty(data.username.toLowerCase())){
+    let user = db.users[data.username.toLowerCase()];
+    //Calculate hashPass
+    let hashPass = hashPassword(data.password, user.salt)
+    if(user.hashPass == hashPass){
+      response.success = true;
+      //Generate token
+      response.token = generateAccessToken(data.username.toLowerCase());
+      //Save to database
+      db.users[data.username.toLowerCase()].tokens.push(response.token);
+      saveToFile(dbPaths.users, JSON.stringify(db.users));
+    }
+  }
+  return response;
 }
 
-function requestNewSalt(){
+function generateAccessToken(username, sessionOnly){
+  const length = 128;
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  //Timeout for 30 days in the future
+  let timeout = new Date(Date.now() + 2592000*1000).toUTCString();
+  let token = "";
+  for(let i = 1; i < length; i++){
+    if(i%8 === 0){
+      token = token + "-";
+    }else{
+      token = token + chars.charAt(crypto.randomInt(0, chars.length));
+    }
+  }
+  return (username + "=" + token + "; expires=" + timeout + "; secure=true");
+}
+
+//Password handling functions
+function generateSalt(){
   return crypto.randomBytes(256).toString();
 }
 

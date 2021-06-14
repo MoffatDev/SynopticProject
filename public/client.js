@@ -1,18 +1,24 @@
-
-
-
 //------------------------------Signup function------------------------------
 function signup(){
   //Obtain signup data
   let form = {};
-  form.username = document.getElementById('username').value;
-  form.password = document.getElementById('password').value;
-  form.name = document.getElementById('name').value;
-  form.over13 = document.getElementById('over13').checked;
+  form.username = document.getElementById("username").value;
+  form.password = document.getElementById("password").value;
+  form.name = document.getElementById("name").value;
+  form.over13 = document.getElementById("over13").checked;
   //Submit data to server
-  console.log('Signup: ', form);
-  sendPost('signup', form)
+  sendPost("signup", form);
 }
+
+function login(){
+  //Obtain login info
+  let form = {};
+  form.username = document.getElementById("username").value;
+  form.password = document.getElementById("password").value;
+  //Submit data to server
+  sendPost("login", form);
+}
+
 
 function addCookie(cookie){
   console.log(cookie.label, cookie.data, cookie.expires);
@@ -20,11 +26,12 @@ function addCookie(cookie){
 
 //------------------------------Communication functions------------------------------
 function sendPost(path, data) {
+  console.log("Posting following to " + path, data)
 	fetch(path, {
-		method: 'POST',
+		method: "POST",
 		body: JSON.stringify(data),
 		headers:{
-			'Content-Type': 'application/json'
+			"Content-Type": "application/json"
 		}
 	})
   .then(handleRes);
@@ -35,21 +42,26 @@ async function handleRes(res){
   //Await promise to fufill
   let returned = await res.json();
   console.log("Server JSON response: ", returned);
-  alert("Server JSON response: " + JSON.stringify(returned));
 
-  /*//Determine what response it is dealing with
-  switch(true){
-    //Signup
-    case returned.hasOwnProperty('signup'):
-
+  switch(returned.type){
+    case "signup":
+      if(returned.success){
+        document.cookie = returned.token;
+        alert("Signup Success: Please rememember your username & password");
+      }else{
+        alert("Signup Failed: " + returned.reason);
+      }
       break;
-    //Signin
-    case returned.hasOwnProperty('signin'):
-
+    case "login":
+      if(returned.success){
+        document.cookie = returned.token;
+        alert("Login Success");
+      }else{
+        alert("Login Failed: " + returned.reason);
+      }
       break;
-    //Any other
     default:
-      console.err('Invalid response');
-
-  }*/
+      console.err("Invalid response");
+      break;
+  }
 }

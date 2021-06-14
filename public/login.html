@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang = "en">
+  <head>
+    <!--Title-->
+    <title>Login Test</title>
+    <!--Meta Data-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Js-->
+    <script src="client.js"></script>
+  </head>
+  <!--Content-->
+  <body>
+    <main>
+      <h1>Login page</h1>
+      <!--Login form-->
+      <form onsubmit="login(); return false">
+        <fieldset>
+          <legend>Login Form</legend>
+          <p>Please note an asterix (*) indicates a required field</p>
+          <label for = "username">Username*:</label><br>
+          <input type = "text" id = "username" placeholder = "JohnSmith1" accesskey = "U" required><br>
+
+          <label for = "password">Password*:</label><br>
+          <input type = "password" id = "password" placeholder = "examplePassword" accesskey = "P" required><br><br>
+          <input type="submit" id="submit" value="Login" checked><br>
+        </fieldset>
+      </form>
+    </main>
+  </body>
