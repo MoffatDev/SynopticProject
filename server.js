@@ -1,8 +1,14 @@
 //------------------------------Setting up enviroment------------------------------
 const express = require('express');
 const app = express();
-const jsonParser = require('body-parser').json(); //Setting up JsonParser
+//Used to handle client/server communication
+const jsonParser = require('body-parser').json();
+//Used for cryptographic generation
 const crypto = require('crypto');
+//Extended unicode regex support, used to verify user input
+const XRegExp = require('xregexp');
+const usernameRegex = XRegExp("^[\\pL|\\pN|_]*$");
+const nameRegex = XRegExp("^[\\pL|-]*$");
 //------------------------------IO Setup------------------------------
 const fs = require('fs');
 const dbPaths = {
@@ -15,7 +21,7 @@ const dbPaths = {
 //Loading up databases
 let db = {
   users: {},
-  notices: {},
+  notices: [],
   mapPoints: {}
 };
 //Loop through all db files
@@ -35,7 +41,7 @@ for (element in dbPaths){
   //Load in database file
   try{
     db[element] = JSON.parse(fs.readFileSync(dbPaths[element],'utf8'));
-    console.log("Data loaded: ", db[element]);
+    //console.log("Data loaded: ", db[element]);
   //If can't load in display error and exit
   }catch(err){
     console.error("Failed to load in db exiting...");
@@ -67,13 +73,33 @@ app.post('/login', jsonParser, function (req, res) {
   res.json(response);
 });
 
+app.post('/getNotices', jsonParser, function (req, res) {
+  console.log("Notice request recieved: ", req.body);
+  let response = getNotices(req.body);
+  console.log('Response: ', response);
+  res.json(response);
+});
+
+//------------------------------Notice Handling------------------------------
+function getNotices(data){
+  let notices = [];
+  let startPos = db.notices.length-1-data.alreadyPulled;
+  for(let i = startPos; i > startPos-10; i--){
+    if (i < 0){
+      break;
+    }else{
+      notices.push(db.notices[i]);
+    }
+  }
+  return {type: "notices", data: notices};
+}
 
 
-//------------------------------Signup stuff------------------------------
+//------------------------------Signup Handling------------------------------
 function signup(data){
-  let response = {type: "signup", success: false, reason: "", token: ""};
-  if(data.name.length >0){
-    if(data.username.length >= 5){
+  let response = {type: "signup", success: false, reason: "General Error, try again later", token: ""};
+  if(data.name.length >0 && nameRegex.test(data.name)){
+    if(data.username.length >= 5 && usernameRegex.test(data.username)){
       //If over13
       if(data.over13){
         //If username not already in database
@@ -84,6 +110,9 @@ function signup(data){
             let salt = generateSalt();
             let hashPass = hashPassword(data.password, salt).toString();
             let token = generateAccessToken(data.username.toLowerCase());
+            if(data.townSelection != "Lobitos" && data.townSelection != "Piedritas"){
+              data.townSelection = null;
+            }
             //Save data
             db.users[data.username.toLowerCase()] = {hashPass: hashPass, salt: salt
               , name: data.name, over13: data.over13, townSelection: data.townSelection
@@ -94,9 +123,9 @@ function signup(data){
           }else{
             response.reason = "Password doesn't meet minimum requirements, see below:"
             + "\n - At least 8 Characters Long"
-            + "\n - Include at least one a-z character"
+            + "\n - Include at least one langauge character"
             + "\n - Include at least one 0-9 digit"
-            + "\n - Include at least one other/special character";
+            + "\n - Include at least one symbol";
           }
         }else{
           response.reason = "Username already in use";
@@ -105,35 +134,26 @@ function signup(data){
         response.reason = "You must be over 13 to use this service";
       }
     }else{
-      response.reason = "Username must be 5 characters or longer";
+      response.reason = "Username must be 5 characters or longer"
+      +" and can only contain language characters, numbers and an underscore '_'";
     }
   }else{
-    response.reason = "Name must be 1 character or longer";
+    response.reason = "Name must be at least one character"
+    +" and can only contain language characters and a hyphen '-'";
   }
   return response;
 }
 
 function checkPassFormat(password){
-  let hasLetter = false;
-  let hasDigit = false;
-  let hasSpecial = false;
   //Password good length
   if(password.length >= 8){
-    //Loop through each character
-    for(let char of password){
-      //Contains 1 latin character
-      if(/[a-z]|[A-Z]/.test(char)){
-        hasLetter = true;
-      //Contains 1 arabic numeral
-      }else if(/\d/.test(char)){
-        hasDigit = true;
-      //Contains 1 other character
-      }else if(/\W/.test(char)){
-        hasSpecial = true;
-      }
-    }
+    //Has language chars                       has digit
+    return XRegExp("[\\pL]").test(password) && XRegExp("[0-9]").test(password)
+            && XRegExp("[\\pS|\\pP]").test(password);
+            //has special
+  }else{
+    return false;
   }
-  return hasLetter && hasDigit && hasSpecial;
 }
 
 

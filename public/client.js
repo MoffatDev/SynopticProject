@@ -1,13 +1,14 @@
+let noticesPage = 0
 //------------------------------HTML Document edit functions------------------------------
 function toggleSigninLoginForm(){
   var signupForm = document.getElementById("signupForm");
   var loginForm = document.getElementById("loginForm");
-  if(loginForm.style.display === "block"){
-    loginForm.style.display = "none";
-    signupForm.style.display = "block";
-  }else{
-    loginForm.style.display = "block";
+  if(signupForm.style.display === "block"){
     signupForm.style.display = "none";
+    loginForm.style.display = "block";
+  }else{
+    signupForm.style.display = "block";
+    loginForm.style.display = "none";
   }
 }
 
@@ -23,7 +24,30 @@ function toggleNoticeForm(){
   }
 }
 
-//------------------------------Signup function------------------------------
+//------------------------------Server dependent functions------------------------------
+function nextPageNotices(){
+  pullNotices(true);
+}
+function lastPageNotices(){
+  pullNotices(false);
+}
+
+function pullNotices(nextNotices){
+  if(nextNotices){
+    noticesPage += 1;
+  }else{
+    noticesPage -= 1;
+  }
+  //Disable previous button if there aren't any previous
+  if(noticesPage-1 > 0){
+    document.getElementById("lastPageButton").disabled = false;
+  }else{
+    document.getElementById("lastPageButton").disabled = true;
+  }
+  sendPost("getNotices", {alreadyPulled: (noticesPage-1)*10});
+}
+
+
 function signup(){
   //Obtain signup data
   let form = {};
@@ -84,6 +108,27 @@ async function handleRes(res){
         alert("Login Success");
       }else{
         alert("Login Failed: " + returned.reason);
+      }
+      break;
+    case "notices":
+      let section = document.getElementById("regularNotices");
+      let notices = section.getElementsByClassName("notice");
+      if(returned.data.length < 10){
+        document.getElementById("nextPageButton").disabled = true;
+      }else{
+        document.getElementById("nextPageButton").disabled = false;
+      }
+      for(let i = 0; i < 10; i++){
+        if(i < returned.data.length){
+          notices[i].style.display = "block"
+          let headers = notices[i].getElementsByClassName("noticeHeader");
+          headers[0].innerText = returned.data[i].username;
+          headers[1].innerText = returned.data[i].title;
+          headers[2].innerText = returned.data[i].town;
+          notices[i].getElementsByClassName("noticeDetails")[0].innerText = returned.data[i].notice;
+        }else{
+          notices[i].style.display = "none";
+        }
       }
       break;
     default:

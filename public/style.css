@@ -1,4 +1,4 @@
-/*------------------Reviews------------------*/
+/*------------------Notices------------------*/
 .notice{
 	border-style: solid;
   border-width: medium;
@@ -32,11 +32,13 @@
   margin: 2px;
 }
 
-.noticeDetails{
+.notice p{
   word-wrap: break-word;
+  margin: 0px;
 }
-
-
+.noticeButton{
+  margin: 5px;
+}
 /*------------------Body/Main------------------*/
 body{
     margin: 0;
@@ -70,7 +72,7 @@ nav a:hover, .selected {
 }
 
 /*------------------Form Styling------------------*/
-#loginForm, #noticeForm{
+#signupForm, #noticeForm{
   display: none;
 }
 
@@ -89,6 +91,12 @@ input, select{
 	background-color: #222222;
 	color: white;
   border-radius: 3px;
+}
+
+button:disabled{
+  color: #777777;
+  background-color: #DDDDDD;
+  pointer-events: none;
 }
 
 #submit:hover, button:hover{
