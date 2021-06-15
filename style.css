@@ -1,10 +1,68 @@
 * {
-  box-sizing: border-box
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
   margin: 0;
   padding: 0;
+}
+
+#button {
+  background-color: #f1f1f1;
+  float: center;
+  border: 1px solid #ccc;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 13;
+  transition: 0.3s;
+}
+ 
+.UserMenu {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 95%;
+}
+
+/* Style the buttons that are used to open the tab content */
+.UserMenu button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 14px;
+  font-size: 13;
+  transition: 0.3s;
+  width: 50%;
+}
+
+/* Change background color of buttons on hover */
+.UserMenu button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.UserMenu button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 12px 20%;
+  border: 1px solid #ccc;
+  border-top: none;
+  width: 95%;
+  animation: fadeEffect 1s; /* Fading effect takes 1 second */
+}
+
+/* Go from zero to full opacity */
+@keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
 
 .container {
@@ -28,6 +86,7 @@ body {
   left: -50px;
   min-width: 280px;
 }
+
 .ol-popup:after, .ol-popup:before {
   top: 100%;
   border: solid transparent;
@@ -37,24 +96,39 @@ body {
   position: absolute;
   pointer-events: none;
 }
+
 .ol-popup:after {
   border-top-color: white;
   border-width: 10px;
   left: 48px;
   margin-left: -10px;
 }
+
 .ol-popup:before {
   border-top-color: #cccccc;
   border-width: 11px;
   left: 48px;
   margin-left: -11px;
 }
+
 .ol-popup-closer {
   text-decoration: none;
   position: absolute;
   top: 2px;
   right: 8px;
 }
+
 .ol-popup-closer:after {
   content: "✖";
+}
+
+.ol-popup-magn {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  left: 8px;
+}
+
+.ol-popup-magn:after {
+  content: "🔎";
 }

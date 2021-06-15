@@ -14,49 +14,75 @@
     <div class = "container">
         <div class = "grid-1">
             <div class = "sidebar">
-                <h2>Select Layer View</h2>
+                <h2>Select View</h2>
 
-                <input type = "radio" name = 'selectLayer' value = 'OSMStandard' checked>Standard<br>
-                <input type = "radio" name = 'selectLayer' value = 'OSMHumanitarian'>Humanitarian<br>
-                <input type = "radio" name = 'selectLayer' value = 'HIGHCONTRAST'>High Contrast<br>
+                <input type = "radio" name = 'selectLayer' value = 'Simplistic' checked>Simplistic<br>
+                <input type = "radio" name = 'selectLayer' value = 'Detailed'>Detailed<br>
+                <input type = "radio" name = 'selectLayer' value = 'HighContrast'>High Contrast<br>
 
                 <p id = "LONG"></p>
                 <p id = "LAT"></p>
 
-                <div class = "Coord Form">
+                <br>
 
-                    <br>
+                <div class = "UserMenu">
+                    <button class="tablinks" onclick="openTask(event , 'CheckSpot')" id = "default">Check Hotspot</button>
+                    <button class="tablinks" onclick="openTask(event , 'AddSpot')">Add Hotspot</button>
+                </div>
 
-                    <h2>Check Hotspot</h2>
+                <div id="CheckSpot" class="tabcontent">
+                    <h3>Check Hotspot</h3>
 
                     <form>
                         <label for="UserLONG">Longitude:</label><br>
                         <input type="text" id="UserLONG" name="UserLONG"><br>
                         <label for="UserLAT">Latitude:</label><br>
                         <input type="text" id="UserLAT" name="UserLAT"><br>
-                        <label for="UserLAT">Name:</label><br>
+                        <label for="UserNAME">Name:</label><br>
                         <input type="text" id="UserNAME" name="UserNAME"><br>
-                        <label for="UserEL">Electricity Status:</label><br>
-                        <input type="text" id="UserEL" name="UserEL"><br> 
-                        <label for="UserWAT">Water Status:</label><br>
-                        <input type="text" id="UserWAT" name="UserWAT"><br>
+
+                        <br>
                         
-                        <button type = "reset" onclick = "userPoint(UserLONG , UserLAT)">Check Hotspot</button>
-                        <button type = "reset" onclick = "addPoint(UserLONG , UserLAT, UserNAME , UserEL , UserWAT)">Add Hotspot</button>
+                        <button id = "button" type = "reset" onclick = "checkUserPoint(UserLONG , UserLAT , UserNAME)">Check Hotspot</button>
                     </form>
 
-                    <p id = "Result"></p>
+                    <p id = "CResult"></p>
+                </div>
+                  
+                <div id="AddSpot" class="tabcontent">
+                    <h3>Add Hotspot</h3>
 
+                    <form>
+                        <label for="UserLONG">Longitude:</label><br>
+                        <input type="text" id="UserLONG" name="UserLONG"><br>
+                        <label for="UserLAT">Latitude:</label><br>
+                        <input type="text" id="UserLAT2" name="UserLAT"><br>
+                        <label for="UserNAME">Name:</label><br>
+                        <input type="text" id="UserNAME2" name="UserNAME"><br>
+                        <label for="UserWAT">Water Status:</label><br>
+                        <input type="text" id="UserWAT" name="UserLAT"><br>
+                        <label for="UserEL">Electricty Status:</label><br>
+                        <input type="text" id="UserEL" name="UserNAME"><br>
+
+                        <br>
+                        
+                        <button id = "button" type = "reset" onclick = "addPoint(UserLONG , UserLAT2, UserNAME2 , UserWAT , UserEL)">Add Hotspot</button>
+
+                    </form>
+
+                    <p id = "AResult"></p>
                 </div>
             </div>
-
         </div>
 
         <div class = "grid-2">
-            <div id="map" class="map"></div>
+            <div id="map" class="map">
+                
+            </div>
 
             <div id="popup" class="ol-popup">
                 <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <a href="#" id="popup-magn" class="ol-popup-magn"></a>
                 <div id="popup-content"></div>
             </div>
         </div>

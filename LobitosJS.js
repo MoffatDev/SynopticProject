@@ -18,20 +18,20 @@ function init() { // Initialization Function.
 
     // Objects for different Layer Views; Standard , Humanitarian & HighContrast.
 
-    // Standard Layer - Map Initally loaded in with.
-    const STANDARD = new ol.layer.Tile({ 
+    // Simple Layer - Map Initally loaded in with.
+    const SIMPLE = new ol.layer.Tile({ 
         source: new ol.source.OSM() ,  // Source from OL Library.
         visible: true,   // Visibilty to true for inception.
-        title: 'OSMStandard'  // Bind to HTML Element.
+        title: 'Simplistic'  // Bind to HTML Element.
     })
 
-    // Humanitarain Layer - More detailed Colour Mapping.
-    const HUMANITARIAN = new ol.layer.Tile({
+    // Detailed Layer - More detailed Colour Mapping.
+    const DETAILED= new ol.layer.Tile({
         source: new ol.source.OSM({  // Source from external URL.
             url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'  // Retrive as jpg.
         }) , 
         visible: false ,  // Visibilty to false for Inception.
-        title: 'OSMHumanitarian' // Bind to HTML Element.
+        title: 'Detailed' // Bind to HTML Element.
     })
 
     // HighContrast Layer - Black & White Scheme.
@@ -43,14 +43,14 @@ function init() { // Initialization Function.
             attributions: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
         }) , 
         visible: false ,  // Visibilty to false for Inception.
-        title: 'HIGHCONTRAST'  // Bind to HTML Element.
+        title: 'HighContrast'  // Bind to HTML Element.
     })
 
     // Group for all Layers. 
     const layers = new ol.layer.Group({
         layers: [
-            STANDARD ,
-            HUMANITARIAN,
+            SIMPLE ,
+            DETAILED , 
             HIGHCONSTRAST
         ]
     })
@@ -91,6 +91,8 @@ function init() { // Initialization Function.
 
     })
 
+    document.getElementById("default").click();
+
     HOTSPOTS[0] = { LONG: -9047833 , LAT: -496186 , NAME: "Title" , EL: true , WA: true };
     HOTSPOTS[1] = { LONG: -9048614 , LAT: -496642 , NAME: "Church" , EL: true , WA: false};
     HOTSPOTS[3] = { LONG: -9048277 , LAT: -496398 , NAME: "La Casona" , EL: false , WA: true};
@@ -109,43 +111,26 @@ function listPoints() {
     });
 }
 
-function addPoint(ULONG , ULAT, UNAME, UEL , UWATER) {
-    var NAME = String(UNAME.value) , LAT = ULAT.value , LONG = ULONG.value , EL = UEL.value , WATER = UWATER.value;
+function openTask(event , task) {
 
-    if (NAME.length > 2 && LONG != null && LAT != null) {
-        console.log(LONG , LAT , NAME);
+  // Declare all variables
+  var i, tabcontent, tablinks;
 
-        var coords = { LONG: LONG , LAT: LAT , NAME: NAME , EL: EL , WATER: WATER };
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
 
-        if (HOTSPOTS.includes(coords)) {
-            toPage("Result" , "Coords are already in a present Hotspot. Please try again.");
-        } else {
-            toPage("Result" , "Hotpsot Added.");
-            HOTSPOTS.push(coords);
-        }
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
 
-    } else {
-        toPage("Result" , "Please enter all details required.");
-    }
-}
-
-function checkPoint(coords) {
-    // Get Selected Location Values.
-    let LONG = Math.round(coords[0]) , LAT = Math.round(coords[1]);
-    
-    console.log("Selected Location: " + LONG + " , " + LAT + " , Checking for Hotspot");
-
-     HOTSPOTS.forEach(function(value) {
-
-        if ( ( LONG <= (value.LONG + 10)) && (LONG >= (value.LONG - 10)) && (LAT <= (value.LAT + 10)) && (LAT >= (value.LAT - 10)) ) {
-
-            console.log("Selected Location matches Hotspot: " + value.NAME);
-
-            toPage("Result" , "Found Hotspot: " + value.NAME + "<br> Electricty Status: " + value.EL + "<br> Water Status: " + value.WA);
-
-            reCentreMap( [ value.LONG , value.LAT ] );
-        }
-    });
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(task).style.display = "block";
+  event.currentTarget.className += " active";
 }
 
 function reCentreMap(centre) {
@@ -159,12 +144,14 @@ function reCentreMap(centre) {
     mapObj.setView(view);
 }
 
-function popUp(coords) {
+function popUp(coords , msg) {
 
     var coor = coords ,
     container = document.getElementById('popup') , 
     content = document.getElementById('popup-content') , 
     closer = document.getElementById('popup-closer') ,
+    magn = document.getElementById('popup-magn');
+
     overlay = new ol.Overlay({
         element: container,
         autoPan: true,
@@ -172,29 +159,119 @@ function popUp(coords) {
           duration: 250,
         },
     });
-
     mapObj.addOverlay(overlay);
 
-    content.innerHTML = '<p>You clicked here:</p>';
+    console.log(coor);
+
+    if (msg == null) {
+        msg = "Unknown Location";
+    }
+
+    content.innerHTML = '<p>' + msg + '<br>Electricity:' + true + '<br>Water:' + false + '</p>';
     overlay.setPosition(coor);
 
-    console.log(coor);
+    magn.onclick = function () {
+        reCentreMap(coor);
+
+        overlay.setPosition(undefined);
+        closer.blur();
+        return false;
+    }
 
     closer.onclick = function () {
         overlay.setPosition(undefined);
         closer.blur();
         return false;
-      };
+    };
 }
 
+function checkPoint(coords) {
+    // Get Selected Location Values.
+    let LONG = Math.round(coords[0]) , LAT = Math.round(coords[1]);
+    
+    console.log("Selected Location: " + LONG + " , " + LAT + " , Checking for Hotspot");
+
+    toPage("CResult" , "Selected Location: " + LONG + " , " + LAT);
+    toPage("AResult" , "Selected Location: " + LONG + " , " + LAT);
+
+    HOTSPOTS.forEach(function(value) {
+
+        if ( ( LONG <= (value.LONG + 10)) && (LONG >= (value.LONG - 10)) && (LAT <= (value.LAT + 10)) && (LAT >= (value.LAT - 10)) ) {
+
+            console.log("Selected Location matches Hotspot: " + value.NAME);
+
+            var txt = "Found Hotspot: " + value.NAME + "<br> Electricty Status: " + value.EL + "<br> Water Status: " + value.WA;
+
+            toPage("CResult" , txt);
+            toPage("AResult" , txt);
+            popUp([ value.LONG , value.LAT ] , [ value.EL , value.WA ]);
+        } 
+    });
+}
+
+function checkUserPoint(ULAT , ULONG , UNAME) {
+
+    var LAT = ULAT.value , 
+    LONG = ULONG.value , 
+    NAME = String(UNAME.value);
+
+    if (LAT.length != 0 || LONG.length != 0 || NAME.length != 0) {
+
+        for (let i = 0; i < HOTSPOTS.length; i++) {
+            if (HOTSPOTS[i].NAME === NAME) {
+                toPage("CResult" , "Hotspot found with Name: " + NAME);
+                popUp( [HOTSPOTS[i].LONG , HOTSPOTS[i].LAT ] , NAME);
+            } else if (HOTSPOTS[i].LONG == LONG && HOTSPOTS[i].LAT == LAT) {
+                toPage("CResult" , "Hotspot found with Coords: " + LONG + " , " + LAT);
+                popUp( [HOTSPOTS[i].LONG , HOTSPOTS[i].LAT ] , NAME);
+            }
+        }
+    }
+}
+
+function addPoint(ULONG , ULAT , UNAME , UWATER , UEL) {
+
+    var LAT = ULAT.value , 
+    LONG = ULONG.value , 
+    NAME = String(UNAME.value) , 
+    EL = UEL.value , 
+    WA = UWATER.value ,
+    VALID = true, 
+    VERIFY = false;
+
+    /*
+    console.log(LONG);
+    console.log(LAT);
+    console.log(UNAME.value);
+    console.log(EL);
+    console.log(WA);
+    */
+
+    if (LONG.length == 0 || LAT.length == 0) {
+        toPage("AResult" , "Please enter both Longitude & Latitude Coords.");
+        VALID = false;
+    } 
+    
+    if (NAME == "") {
+        toPage("AResult" , "Please enter a Hotspot Name.");
+        VALID = false;
+    }
+
+    if (EL.length == 0) {
+        toPage("AResult" , "Please enter an Electricity Level.");
+        VALID = false;
+    }
+
+    if (WA.length == 0) {
+        toPage("AResult" , "Please enter a Water Level.");
+        VALID = false;
+    }
+
+    if (VALID) {
+        console.log("VALID");
 
 
-function userPoint(ULONG , ULAT) {
-    console.log("User-Entered Coords: " + ULONG.value + " , " + ULAT.value);
-
-    var x = [ULONG.value , ULAT.value];
-
-    checkPoint(x);
+    }
 }
 
 function toPage(element , msg) {
