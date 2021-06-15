@@ -1,12 +1,25 @@
+//Switch form functions
+function switchForm(){
+  var signupForm = document.getElementById("signupForm");
+  var loginForm = document.getElementById("loginForm");
+  if(loginForm.style.display === "none"){
+    loginForm.style.display = "block"
+    signupForm.style.display = "none"
+  }else{
+    loginForm.style.display = "none"
+    signupForm.style.display = "block"
+  }
+}
+
 //------------------------------Signup function------------------------------
 function signup(){
   //Obtain signup data
   let form = {};
-  form.username = document.getElementById("username").value;
-  form.password = document.getElementById("password").value;
-  form.name = document.getElementById("name").value;
-  form.over13 = document.getElementById("over13").checked;
-  form.townSelection = document.getElementById("townSelection").value;
+  form.username = document.getElementById("signupUsername").value;
+  form.password = document.getElementById("signupPassword").value;
+  form.name = document.getElementById("signupName").value;
+  form.over13 = document.getElementById("signupOver13").checked;
+  form.townSelection = document.getElementById("signupTownSelection").value;
   //Submit data to server
   sendPost("signup", form);
 }
@@ -14,8 +27,8 @@ function signup(){
 function login(){
   //Obtain login info
   let form = {};
-  form.username = document.getElementById("username").value;
-  form.password = document.getElementById("password").value;
+  form.username = document.getElementById("loginUsername").value;
+  form.password = document.getElementById("loginPassword").value;
   //Submit data to server
   sendPost("login", form);
 }
