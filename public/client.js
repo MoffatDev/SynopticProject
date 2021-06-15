@@ -1,5 +1,5 @@
-//Switch form functions
-function switchForm(){
+//------------------------------HTML Document edit functions------------------------------
+function toggleSigninLoginForm(){
   var signupForm = document.getElementById("signupForm");
   var loginForm = document.getElementById("loginForm");
   if(loginForm.style.display === "block"){
@@ -8,6 +8,18 @@ function switchForm(){
   }else{
     loginForm.style.display = "block";
     signupForm.style.display = "none";
+  }
+}
+
+function toggleNoticeForm(){
+  var noticeForm = document.getElementById("noticeForm");
+  var button = document.getElementById("toggleNoticeForm");
+  if(noticeForm.style.display === "block"){
+    noticeForm.style.display = "none";
+    button.innerText = "Add Notice";
+  }else{
+    noticeForm.style.display = "block"
+    button.innerText = "Hide Form";
   }
 }
 

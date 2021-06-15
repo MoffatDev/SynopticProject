@@ -5,6 +5,11 @@
     <title>Homepage</title>
     <!--CSS-->
     <link rel="stylesheet" type="text/css" href="style.css">
+    <!--Meta Data-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Js-->
+    <script src="client.js"></script>
   </head>
   <!--Content-->
   <body>
@@ -17,5 +22,44 @@
       </nav>
     <header>
     <main>
+      <h1>NoticeBoard</h1>
+      <div id="noticeForm">
+        <form onsubmit="addNotice(); return false">
+          <fieldset>
+            <p>Please note an asterix (*) indicates a required field</p>
+            <label for = "noticeTitle">Notice title:</label><br>
+            <input type = "text" id = "noticeTitle" accesskey = "T"><br>
+
+            <label for = "notice">Notice*:</label><br>
+            <textarea rows = "5" cols = "35" id = "notice" accesskey = "N" required></textarea><br>
+
+            <label for = "noticeTownSelection">Select which town you live in:</label><br>
+              <select id = "noticeTownSelection">
+                <option value = "none">Prefer not to say</option>
+                <option value = "Lobitos">Lobitos</option>
+                <option value = "Piedritas">Piedritas</option>
+              </select><br><br>
+            <input type="submit" id="submit" value="Add Notice" checked><br>
+          </fieldset>
+        </form>
+      </div>
+      <!-- Add notice button (brings up form) -->
+      <button onclick="toggleNoticeForm()" type="button" id="toggleNoticeForm">Add Notice</button>
+      <!-- Pinned/important notices -->
+      <div class = "notice pinnedNotice">
+        <span class = "noticeDetails">Visit: <a href = "https://www.who.int/es/health-topics/coronavirus">www.who.int</a> for
+          accurate COVID-19 information</span>
+      </div>
+
+      <div class = "notice">
+        <div class = "noticeHeader">Username</div>
+        <div class = "noticeHeader">Help my a key is stuck</div>
+        <div class = "noticeHeader">Lobitos</div>
+        <span class = "noticeDetails">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+      </div>
+
+      <!-- 10 notices -->
+      <!-- show next 10 -->
     </main>
   </body>

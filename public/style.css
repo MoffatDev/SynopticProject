@@ -1,19 +1,53 @@
+/*------------------Reviews------------------*/
+.notice{
+	border-style: solid;
+  border-width: medium;
+  border-color: #222222;
+	padding: 5px;
+	border-radius: 3px;
+  text-align: left;
+	margin: 10px;
+  font-size: 15px;
+}
+
+.pinnedNotice{
+  border-color: gold;
+  background-color: #222222;
+  color: white;
+}
+
+.pinnedNotice a{
+  color: white;
+}
+
+
+.noticeHeader{
+	border: none;
+  background-color: #222222;
+  color: white;
+	border-radius: 3px;
+	display: inline-block;
+  font-size: 15px;
+	padding: 5px;
+  margin: 2px;
+}
+
+.noticeDetails{
+  word-wrap: break-word;
+}
+
+
 /*------------------Body/Main------------------*/
 body{
     margin: 0;
     padding: 0;
+    text-align: center;
     font-family: 'Helvetica', sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
-
 /*------------------Text Formatting------------------*/
-h1{
-  padding: 10px;
-  background-color: white;
-  border-radius: 3px;
-}
 
 /*------------------Nav Bar------------------*/
 nav {
@@ -36,7 +70,7 @@ nav a:hover, .selected {
 }
 
 /*------------------Form Styling------------------*/
-#loginForm{
+#loginForm, #noticeForm{
   display: none;
 }
 
@@ -62,25 +96,31 @@ input, select{
 	background-color: #DDDDDD;
 }
 
-form{
+main{
   margin: auto;
   padding: 10px;
   text-align: center;
   border-radius: 3px;
 	max-width: 700px;
   min-width: 300px;
-  padding-bottom: 0px;
+  border: none;
 }
 
 fieldset{
   border: none;
+  padding: 0px;
+  margin: 0px;
 }
 
-legend{
+legend, h1{
+  font-weight: normal;
   font-size: 150%;
   background-color: #222222;
   color: white;
   border-radius: 3px;
-  padding: 5px;
+  padding: 0px;
+  margin-top: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   width: 100%;
 }

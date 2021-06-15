@@ -2,7 +2,7 @@
 <html lang = "en">
   <head>
     <!--Title-->
-    <title>Signup Test</title>
+    <title>Signup & Login</title>
     <!--CSS-->
     <link rel="stylesheet" type="text/css" href="style.css">
     <!--Meta Data-->
@@ -48,7 +48,7 @@
             <label for = "signupOver13">I am over the age of 13*:</label><br>
             <input type = "checkbox" id = "signupOver13"><br><br>
             <input type="submit" id="submit" value="SignUp"><br>
-            <button onclick="switchForm()" type="button">Login Instead</button>
+            <button onclick="toggleSigninLoginForm()" type="button">Login Instead</button>
           </fieldset>
         </form>
       </div>
@@ -64,7 +64,7 @@
             <label for = "loginPassword">Password*:</label><br>
             <input type = "password" id = "loginPassword" placeholder = "examplePassword" accesskey = "P" required><br><br>
             <input type="submit" id="submit" value="Login" checked><br>
-            <button onclick="switchForm()" type="button">Signup Instead</button>
+            <button onclick="toggleSigninLoginForm()" type="button">Signup Instead</button>
           </fieldset>
         </form>
       </div>
