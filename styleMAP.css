@@ -1,0 +1,176 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#button {
+  background-color: #f1f1f1;
+  float: center;
+  border: 1px solid #ccc;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 13;
+  transition: 0.3s;
+}
+ 
+.UserMenu {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 95%;
+}
+
+/* Style the buttons that are used to open the tab content */
+.UserMenu button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 14px;
+  font-size: 13;
+  transition: 0.3s;
+  width: 50%;
+}
+
+/* Change background color of buttons on hover */
+.UserMenu button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.UserMenu button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 12px 20%;
+  border: 1px solid #ccc;
+  border-top: none;
+  width: 95%;
+  animation: fadeEffect 1s; /* Fading effect takes 1 second */
+}
+
+#AError {
+  color: rgb(215, 46, 46);
+}
+
+#CError {
+  color: rgb(215, 46, 46);
+}
+
+
+/* Go from zero to full opacity */
+@keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+#UserWat {
+  width: 85%;
+  padding: 4px;
+}
+
+#UserEL {
+  width: 85%;
+  padding: 4px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 20vw 80vw;
+  grid-template-rows: 100vh;
+}
+
+.sidebar {
+  margin-left: 15px;
+}
+
+.ol-popup {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 280px;
+}
+
+.ol-popup:after, .ol-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.ol-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+
+.ol-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+
+.ol-popup-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  right: 8px;
+}
+
+.ol-popup-closer:after {
+  content: "✖";
+}
+
+.ol-popup-magn {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  left: 8px;
+}
+
+.ol-popup-magn:after {
+  content: "🔎";
+}
+
+/*------------------Navigation Bar------------------*/
+nav {
+    background-color: #222222;
+    text-align: center;
+    min-width: 310px;
+  }
+  
+  /*Styles nav bar buttons*/
+  nav a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  /*Highlights current page button*/
+  nav a:hover, .selected {
+    background-color: white;
+    color: black;
+  }

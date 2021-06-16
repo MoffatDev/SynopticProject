@@ -3,26 +3,109 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piedritas Map</title>
+    <title>Lobitos Map</title>
 
-    <link rel = "stylesheet" href = "./style.css">
+    <link rel = "stylesheet" href = "./styleMAP.css">
     <link rel = "stylesheet" href = "./libs/v6.5.0-dist/ol.css">
+
 </head>
 <body>
+
+    <header>
+        <nav>
+          <!--Nav bar links-->
+          <a href="index.html" class = "selected">Map</a>
+          <a href="noticeboard.html">Noticeboard</a>
+          <a href="signup_login.html">Login/Signup</a>
+        </nav>
+      <header>
 
     <div class = "container">
         <div class = "grid-1">
             <div class = "sidebar">
-                <h2>Select Layer View</h2>
+                <h2>Select View</h2>
 
-                <input type = "radio" name = 'selectLayer' value = 'OSMStandard' checked>Standard<br>
-                <input type = "radio" name = 'selectLayer' value = 'OSMHumanitarian'>Humanitarian<br>
-                <input type = "radio" name = 'selectLayer' value = 'HIGHCONTRAST'>High Contrast<br>
+                <input type = "radio" name = 'selectLayer' value = 'Simplistic' checked>Simplistic<br>
+                <input type = "radio" name = 'selectLayer' value = 'Detailed'>Detailed<br>
+                <input type = "radio" name = 'selectLayer' value = 'HighContrast'>High Contrast<br>
+
+                <p id = "LONG"></p>
+                <p id = "LAT"></p>
+
+                <br>
+
+                <div class = "UserMenu">
+                    <button class="tablinks" onclick="openTask(event , 'CheckSpot')" id = "default">Check Hotspot</button>
+                    <button class="tablinks" onclick="openTask(event , 'AddSpot')">Add Hotspot</button>
+                </div>
+
+                <div id="CheckSpot" class="tabcontent">
+                    <h3>Check Hotspot</h3>
+
+                    <form>
+                        <label for="UserLONG">Longitude:</label><br>
+                        <input type="text" id="UserLONG" name="UserLONG"><br>
+                        <label for="UserLAT">Latitude:</label><br>
+                        <input type="text" id="UserLAT" name="UserLAT"><br>
+                        <label for="UserNAME">Name:</label><br>
+                        <input type="text" id="UserNAME" name="UserNAME"><br>
+
+                        <br>
+                        
+                        <button id = "button" type = "reset" onclick = "checkUserPoint(UserLONG , UserLAT , UserNAME)">Check Hotspot</button>
+                    </form>
+
+                    <p id = "CResult"></p>
+                    <p id = "CError"></p>
+                </div>
+                  
+                <div id="AddSpot" class="tabcontent">
+                    <h3>Add Hotspot</h3>
+
+                    <form>
+                        <label for="UserLONG">Longitude:</label><br>
+                        <input type="text" id="UserLONG" name="UserLONG"><br>
+                        <label for="UserLAT">Latitude:</label><br>
+                        <input type="text" id="UserLAT2" name="UserLAT"><br>
+                        <label for="UserNAME">Name:</label><br>
+                        <input type="text" id="UserNAME2" name="UserNAME"><br>
+
+                        <label for="UserWAT">Water Status:</label><br>
+                        <select name="UserWAT" id = "UserWAT">
+                            <option value = "1">1</option>
+                            <option value = "2">2</option>
+                            <option value = "3">3</option>
+                            <option value = "4">4</option>
+                        </select><br>
+
+                        <label for="UserEL">Electricity Status:</label><br>
+                        <select name="UserEL" id = "UserEL">
+                            <option value = "1">1</option>
+                            <option value = "2">2</option>
+                            <option value = "3">3</option>
+                            <option value = "4">4</option>
+                        </select><br>
+
+                        <button id = "button" type = "reset" onclick = "addPoint(UserLONG , UserLAT2, UserNAME2 , UserWAT , UserEL)">Add Hotspot</button>
+
+                    </form>
+
+                    <p id = "AResult"></p>
+                    <p id = "AError"></p>
+                </div>
             </div>
         </div>
 
         <div class = "grid-2">
-            <div id = 'map' class = 'map'> </div>
+            <div id="map" class="map">
+                
+            </div>
+
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <a href="#" id="popup-magn" class="ol-popup-magn"></a>
+                <div id="popup-content"></div>
+            </div>
         </div>
     </div>
 
