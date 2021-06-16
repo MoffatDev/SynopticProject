@@ -59,10 +59,29 @@ body {
   animation: fadeEffect 1s; /* Fading effect takes 1 second */
 }
 
+#AError {
+  color: rgb(215, 46, 46);
+}
+
+#CError {
+  color: rgb(215, 46, 46);
+}
+
+
 /* Go from zero to full opacity */
 @keyframes fadeEffect {
   from {opacity: 0;}
   to {opacity: 1;}
+}
+
+#UserWat {
+  width: 85%;
+  padding: 4px;
+}
+
+#UserEL {
+  width: 85%;
+  padding: 4px;
 }
 
 .container {

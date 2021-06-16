@@ -213,17 +213,39 @@ function checkUserPoint(ULAT , ULONG , UNAME) {
 
     var LAT = ULAT.value , 
     LONG = ULONG.value , 
-    NAME = String(UNAME.value);
+    NAME = String(UNAME.value) , 
+    VALID = true;
 
-    if (LAT.length != 0 || LONG.length != 0 || NAME.length != 0) {
+    if ( (LAT.length == 0 || LONG.length == 0) && NAME === "") {
+        toPage("CError" , "Please enter both Longitude & Latitude Coords");
+        VALID = false;
+    } else if ((LAT.length == 0 || LONG.length == 0) || NAME !== "") {
+        VALID = true;
+    }
+
+    if (NAME === "") {
+        toPage("CError" , "Please enter a Hotspot Name");
+        VALID = false;
+    }
+
+    if (VALID) {
+        console.log(LONG);
+        console.log(LAT);
+        console.log(NAME);
 
         for (let i = 0; i < HOTSPOTS.length; i++) {
-            if (HOTSPOTS[i].NAME === NAME) {
-                toPage("CResult" , "Hotspot found with Name: " + NAME);
-                popUp( [HOTSPOTS[i].LONG , HOTSPOTS[i].LAT ] , NAME);
-            } else if (HOTSPOTS[i].LONG == LONG && HOTSPOTS[i].LAT == LAT) {
-                toPage("CResult" , "Hotspot found with Coords: " + LONG + " , " + LAT);
-                popUp( [HOTSPOTS[i].LONG , HOTSPOTS[i].LAT ] , NAME);
+            if (LONG == HOTSPOTS[i].LONG && LAT == HOTSPOTS[i].LAT) {
+                toPage("CResult" , "Hotspot Found with Coords: " + LONG + " , " + LAT);
+                popUp( [ HOTSPOTS[i].LONG , HOTSPOTS[i].LAT ] ,  HOTSPOTS[i].LONG + " , " + HOTSPOTS[i].LAT );
+                VALID = false;
+            } else if (NAME === HOTSPOTS[i].NAME) {
+                toPage("CResult" , "Hotspot Found with Name: " + NAME );
+                popUp( [ HOTSPOTS[i].LONG , HOTSPOTS[i].LAT ] , NAME);
+                VALID = false;
+            }
+
+            if (VALID) {
+                toPage("CError" , "No Hotspot was Found");
             }
         }
     }
@@ -237,7 +259,7 @@ function addPoint(ULONG , ULAT , UNAME , UWATER , UEL) {
     EL = UEL.value , 
     WA = UWATER.value ,
     VALID = true, 
-    VERIFY = false;
+    VERIFY = true;
 
     /*
     console.log(LONG);
@@ -248,29 +270,48 @@ function addPoint(ULONG , ULAT , UNAME , UWATER , UEL) {
     */
 
     if (LONG.length == 0 || LAT.length == 0) {
-        toPage("AResult" , "Please enter both Longitude & Latitude Coords.");
+        toPage("AError" , "Please enter both Longitude & Latitude Coords.");
         VALID = false;
     } 
     
     if (NAME == "") {
-        toPage("AResult" , "Please enter a Hotspot Name.");
+        toPage("AError" , "Please enter a Hotspot Name.");
         VALID = false;
     }
 
     if (EL.length == 0) {
-        toPage("AResult" , "Please enter an Electricity Level.");
+        toPage("AError" , "Please enter an Electricity Level.");
         VALID = false;
     }
 
     if (WA.length == 0) {
-        toPage("AResult" , "Please enter a Water Level.");
+        toPage("AError" , "Please enter a Water Level.");
         VALID = false;
     }
 
     if (VALID) {
-        console.log("VALID");
+        console.log(LONG);
+        console.log(LAT);
+        console.log(UNAME.value);
+        console.log(EL);
+        console.log(WA);
 
+        for (let i = 0; i < HOTSPOTS.length; i++) {
+            if (LONG == HOTSPOTS[i].LONG && LAT == HOTSPOTS[i].LAT) {
+                toPage("AError" , "The entered Coords are already registered to a Hotspot.");
+                VERIFY = false;
+            }
 
+            if (NAME === HOTSPOTS[i].NAME) {
+                toPage("AError" , "The entered Name is already registered to a Hotspot");
+                VERIFY = false;
+            }
+        }
+
+        if (VERIFY) {
+            toPage("AResult" , "Hotspot Added as " + NAME);
+            popUp( [ LONG , LAT] , NAME );
+        }
     }
 }
 

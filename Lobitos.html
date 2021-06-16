@@ -47,6 +47,7 @@
                     </form>
 
                     <p id = "CResult"></p>
+                    <p id = "CError"></p>
                 </div>
                   
                 <div id="AddSpot" class="tabcontent">
@@ -59,18 +60,29 @@
                         <input type="text" id="UserLAT2" name="UserLAT"><br>
                         <label for="UserNAME">Name:</label><br>
                         <input type="text" id="UserNAME2" name="UserNAME"><br>
-                        <label for="UserWAT">Water Status:</label><br>
-                        <input type="text" id="UserWAT" name="UserLAT"><br>
-                        <label for="UserEL">Electricty Status:</label><br>
-                        <input type="text" id="UserEL" name="UserNAME"><br>
 
-                        <br>
-                        
+                        <label for="UserWAT">Water Status:</label><br>
+                        <select name="UserWAT" id = "UserWAT">
+                            <option value = "1">1</option>
+                            <option value = "2">2</option>
+                            <option value = "3">3</option>
+                            <option value = "4">4</option>
+                        </select><br>
+
+                        <label for="UserEL">Electricity Status:</label><br>
+                        <select name="UserEL" id = "UserEL">
+                            <option value = "1">1</option>
+                            <option value = "2">2</option>
+                            <option value = "3">3</option>
+                            <option value = "4">4</option>
+                        </select><br>
+
                         <button id = "button" type = "reset" onclick = "addPoint(UserLONG , UserLAT2, UserNAME2 , UserWAT , UserEL)">Add Hotspot</button>
 
                     </form>
 
                     <p id = "AResult"></p>
+                    <p id = "AError"></p>
                 </div>
             </div>
         </div>
