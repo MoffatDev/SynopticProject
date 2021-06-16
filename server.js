@@ -103,23 +103,23 @@ function getNotices(data){
 function postNotice(data){
   //Title, notice, town, and maybe token
   let response = {type: "postNotice", success: false, reason: "General Error, try again later"};
-  let username = "-Anon-";
+  let username = "anon user";
   //If logged in associate notice with user
   if(checkToken(data.token)){
     username = data.token.split("=")[0];
   }
   //Check Title is <= 32 chars
   if(data.title.length <= 32){
-    if(data.notice.length <= 512){
+    if(data.notice.length <= 512 && data.notice.length > 0){
       let town = verifyTown(data.town) ? data.town : "";
       db.notices.push({username: username, title: data.title, notice: data.notice, town: town})
       saveToFile(dbPaths.notices, JSON.stringify(db.notices));
       response.success = true;
     }else{
-      response.reason = "Notice is too long, maxium of 512 characters";
+      response.reason = "Notice must be more than 1 character and less than 512 characters";
     }
   }else{
-    response.reason = "Title is too long, maxium of 32 characters";
+    response.reason = "Title bust be less than 32 characters";
   }
   return response;
 }

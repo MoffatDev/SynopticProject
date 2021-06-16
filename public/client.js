@@ -140,7 +140,12 @@ async function handleRes(res){
           notices[i].style.display = "block"
           let headers = notices[i].getElementsByClassName("noticeHeader");
           headers[0].innerText = returned.data[i].username;
-          headers[1].innerText = returned.data[i].title;
+          if(returned.data[i].title == ""){
+            headers[1].style.display = "none";
+          }else{
+            headers[1].style.display = "inline-block";
+            headers[1].innerText = returned.data[i].title;
+          }
           if(returned.data[i].town == ""){
             headers[2].style.display = "none";
           }else{
