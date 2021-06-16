@@ -1,0 +1,25 @@
+{
+  "name": "synopticproject",
+  "version": "1.0.0",
+  "description": "Year 2 Synoptic Project, based on an Engineers without Borders inititive.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MoffatDev/SynopticProject.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MoffatDev/SynopticProject/issues"
+  },
+  "homepage": "https://github.com/MoffatDev/SynopticProject#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "xregexp": "^5.0.2"
+  }
+}

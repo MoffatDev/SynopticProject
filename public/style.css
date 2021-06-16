@@ -1,0 +1,157 @@
+/*------------------Webpage Body/Main------------------*/
+/*Sets font, */
+body{
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-family: 'Helvetica', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+/*Keeps content in center of window*/
+main{
+  margin: auto;
+  padding: 10px;
+  text-align: center;
+	max-width: 700px;
+  min-width: 300px;
+  border: none;
+}
+
+/*------------------Navigation Bar------------------*/
+nav {
+  background-color: #222222;
+  text-align: center;
+  min-width: 310px;
+}
+
+/*Styles nav bar buttons*/
+nav a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+/*Highlights current page button*/
+nav a:hover, .selected {
+  background-color: white;
+  color: black;
+}
+
+/*------------------User Interaction Section------------------*/
+/*Hide specific forms & elements on first load*/
+#signupForm, #noticeForm, .notice{
+  display: none;
+}
+
+/*Buttons*/
+#submit, button{
+	border: none;
+	width: 50%;
+  min-width: 200px;
+	height: 40px;
+	background-color: #222222;
+	color: white;
+  border-radius: 3px;
+}
+
+button:disabled{
+  color: #777777;
+  background-color: #DDDDDD;
+  pointer-events: none;
+}
+
+#submit:hover, button:hover{
+  color: black;
+	background-color: #DDDDDD;
+}
+
+/*Adds spacing between buttons on notice page*/
+.noticeButton{
+  margin: 5px;
+}
+
+/*Thins & lengthens refresh button on notice page*/
+#refreshNotices{
+	width: 95%;
+	height: 20px;
+}
+
+/*User input style*/
+input, select, textarea{
+  width: 50%;
+  min-width: 250px;
+  padding: 5px;
+	margin-bottom: 4px;
+}
+
+/*------------------Form Stlying------------------*/
+/*Disable field outline*/
+fieldset{
+  border: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+/*Style form titles and h1 to be the same*/
+legend, h1{
+  font-weight: normal;
+  font-size: 150%;
+  background-color: #222222;
+  color: white;
+  border-radius: 3px;
+  padding: 0px;
+  margin-top: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 100%;
+}
+
+
+/*------------------Notices------------------*/
+/*notice container styling*/
+.notice{
+	border-style: solid;
+  border-width: medium;
+  border-color: #222222;
+	padding: 5px;
+	border-radius: 3px;
+  text-align: left;
+	margin: 10px;
+  font-size: 15px;
+}
+
+.pinnedNotice{
+  display: block;
+  border-color: gold;
+  background-color: #222222;
+  color: white;
+}
+
+/*notice content styling*/
+/*Make links visible on black background*/
+.pinnedNotice a{
+  color: white;
+}
+
+/*Shows headers in little boxes to differenciate from other content*/
+.noticeHeader{
+	border: none;
+  background-color: #222222;
+  color: white;
+	border-radius: 3px;
+	display: inline-block;
+  font-size: 15px;
+	padding: 5px;
+  margin: 2px;
+}
+
+/*Allows content to break properly & fit nicely in notice container*/
+.notice p{
+  word-wrap: break-word;
+  margin: 0px;
+}
