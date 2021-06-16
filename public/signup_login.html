@@ -12,7 +12,7 @@
     <script src="client.js"></script>
   </head>
   <!--Content-->
-  <body onload = "checkLogin()">
+  <body onload = "checkToken()">
     <header>
       <nav>
         <!--Nav bar links-->
@@ -22,13 +22,14 @@
       </nav>
     <header>
     <main>
-      <!--Signup form-->
+      <!--Signup form, hidden by default-->
       <div id="signupForm">
         <form onsubmit="signup(); return false">
           <fieldset>
             <legend>Signup Form</legend>
             <p>Please note an asterix (*) indicates a required field</p>
 
+            <!--User inputs-->
             <label for = "signupName">Name*:</label><br>
             <input type = "text" id = "signupName" placeholder = "John Smith" accesskey = "N" required><br>
 
@@ -47,6 +48,8 @@
 
             <label for = "signupOver13">I am over the age of 13*:</label><br>
             <input type = "checkbox" id = "signupOver13"><br><br>
+
+            <!--Submission/Form switch-->
             <input type="submit" id="submit" value="SignUp"><br>
             <button onclick="toggleSigninLoginForm()" type="button">Login Instead</button>
           </fieldset>
@@ -58,11 +61,15 @@
           <fieldset>
             <legend>Login Form</legend>
             <p>Please note an asterix (*) indicates a required field</p>
+
+            <!--User inputs-->
             <label for = "loginUsername">Username*:</label><br>
             <input type = "text" id = "loginUsername" placeholder = "JohnSmith1" accesskey = "U" required><br>
 
             <label for = "loginPassword">Password*:</label><br>
             <input type = "password" id = "loginPassword" placeholder = "examplePassword" accesskey = "P" required><br><br>
+
+            <!--Submission/Form switch-->
             <input type="submit" id="submit" value="Login" checked><br>
             <button onclick="toggleSigninLoginForm()" type="button">Signup Instead</button>
           </fieldset>

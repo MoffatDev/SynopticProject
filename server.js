@@ -5,11 +5,11 @@ const app = express();
 const jsonParser = require('body-parser').json();
 //Used for cryptographic generation
 const crypto = require('crypto');
-//Extended unicode regex support, used to verify user input
+//Extended unicode regex support, used to verify some user input
 const XRegExp = require('xregexp');
 const usernameRegex = XRegExp("^[\\pL|\\pN|_]*$");
 const nameRegex = XRegExp("^[\\pL|-]*$");
-//------------------------------IO Setup------------------------------
+//File system access and paths
 const fs = require('fs');
 const dbPaths = {
   users:      './data/users.json',
@@ -18,22 +18,21 @@ const dbPaths = {
 }
 
 //------------------------------Server start------------------------------
-//Loading up databases
+//Creating database variable
 let db = {
   users: {},
   notices: [],
   mapPoints: {}
 };
-//Loop through all db files
+//Loop through all db files & load in data
 for (element in dbPaths){
   console.log("Loading in '" + element + "' database from: '" + dbPaths[element]);
-  /*The follwing code snippit containing "fs.accessSync" uses from the nodejs
+  /*The follwing code snippit containing "fs.accessSync" uses code from the nodejs
   api documenation, which is linked here: https://nodejs.org/api/fs.html*/
-
   //Checking if db file exists
   try {
     fs.accessSync(dbPaths[element], fs.constants.F_OK);
-  //If it doesn't create it
+  //If it doesn't create and empty version
   }catch (err) {
     console.error("WARN: File doesn't exist creating empty one");
     fs.writeFileSync(dbPaths[element], JSON.stringify(db[element]), 'utf8');
@@ -41,14 +40,13 @@ for (element in dbPaths){
   //Load in database file
   try{
     db[element] = JSON.parse(fs.readFileSync(dbPaths[element],'utf8'));
-    //console.log("Data loaded: ", db[element]);
+    console.log("Success!\n")
   //If can't load in display error and exit
   }catch(err){
     console.error("Failed to load in db exiting...");
     console.error(err);
     process.exit(1);
   }
-  console.log();
 }
 
 //------------------------------Serving website------------------------------
@@ -59,144 +57,43 @@ app.listen(3000, function () {
 
 //------------------------------Client/Server communication------------------------------
 app.post('/signup', jsonParser, function (req, res) {
+  //Log request, process then return
   console.log("Signup recieved: ", req.body);
   let response = signup(req.body);
-  //console.log('Response: ', response);
   res.json(response);
 });
 
 app.post('/login', jsonParser, function (req, res) {
+  //Log request, process then return
   console.log("Login recieved: ", req.body);
   let response = login(req.body);
-  //console.log('Response: ', response);
   res.json(response);
 });
 
 app.post('/getNotices', jsonParser, function (req, res) {
+  //Log request, process then return
   console.log("Get notice request recieved: ", req.body);
   let response = getNotices(req.body);
-  //console.log('Response: ', response);
   res.json(response);
 });
 
 app.post('/postNotice', jsonParser, function (req, res) {
+  //Log request, process then return
   console.log("Notice post request recieved: ", req.body);
   let response = postNotice(req.body);
-  //console.log('Response: ', response);
   res.json(response);
 });
 
-app.post('/checkLogin', jsonParser, function (req, res) {
-  console.log("Notice post request recieved: ", req.body);
+app.post('/checkToken', jsonParser, function (req, res) {
+  //Log request, process then return
+  console.log("Check token request recieved: ", req.body);
   let response = {type: "checkLogin", success: checkToken(req.body.token)};
-  //console.log('Response: ', response);
   res.json(response);
 });
 
-//------------------------------Notice Handling------------------------------
-function getNotices(data){
-  let notices = [];
-  let startPos = db.notices.length-1-data.alreadyPulled;
-  for(let i = startPos; i > startPos-10; i--){
-    if (i < 0){
-      break;
-    }else{
-      notices.push(db.notices[i]);
-    }
-  }
-  return {type: "notices", data: notices};
-}
-
-function postNotice(data){
-  //Title, notice, town, and maybe token
-  let response = {type: "postNotice", success: false, reason: "General Error, try again later"};
-  let username = "anon user";
-  //If logged in associate notice with user
-  if(checkToken(data.token)){
-    username = data.token.split("=")[0];
-  }
-  //Check Title is <= 32 chars
-  if(data.title.length <= 32){
-    if(data.notice.length <= 512 && data.notice.length > 0){
-      let town = verifyTown(data.town) ? data.town : "";
-      db.notices.push({username: username, title: data.title, notice: data.notice, town: town})
-      saveToFile(dbPaths.notices, JSON.stringify(db.notices));
-      response.success = true;
-    }else{
-      response.reason = "Notice must be more than 1 character and less than 512 characters";
-    }
-  }else{
-    response.reason = "Title bust be less than 32 characters";
-  }
-  return response;
-}
-
-
-//------------------------------Signup Handling------------------------------
-function signup(data){
-  let response = {type: "signup", success: false, reason: "General Error, try again later", token: ""};
-  if(data.name.length >0 && nameRegex.test(data.name)){
-    if(data.username.length >= 5 && data.username.length <= 16 && usernameRegex.test(data.username)){
-      //If over13
-      if(data.over13){
-        //If username not already in database
-        if(!db.users.hasOwnProperty(data.username.toLowerCase())){
-          //If password matches minimum requrements
-          if(checkPassFormat(data.password)){
-            //Generate salt and hash password
-            let salt = generateSalt();
-            let hashPass = hashPassword(data.password, salt).toString();
-            let token = generateAccessToken(data.username.toLowerCase());
-            if(data.townSelection != "Lobitos" && data.townSelection != "Piedritas"){
-              data.townSelection = null;
-            }
-            //Save data
-            db.users[data.username.toLowerCase()] = {hashPass: hashPass, salt: salt
-              , name: data.name, over13: data.over13, townSelection: data.townSelection
-              ,tokens: [token]};
-            saveToFile(dbPaths.users, JSON.stringify(db.users));
-            response.success = true;
-            response.token = token;
-          }else{
-            response.reason = "Password doesn't meet minimum requirements, see below:"
-            + "\n - At least 8 Characters Long"
-            + "\n - Include at least one langauge character"
-            + "\n - Include at least one 0-9 digit"
-            + "\n - Include at least one symbol";
-          }
-        }else{
-          response.reason = "Username already in use";
-        }
-      }else{
-        response.reason = "You must be over 13 to use this service";
-      }
-    }else{
-      response.reason = "Username must be between 5 & 16 characters long"
-      +" and can only contain language characters, numbers and an underscore '_'";
-    }
-  }else{
-    response.reason = "Name must be at least one character"
-    +" and can only contain language characters and a hyphen '-'";
-  }
-  return response;
-}
-
-function checkPassFormat(password){
-  //Password good length
-  if(password.length >= 8){
-    //Has language chars                       has digit
-    return XRegExp("[\\pL]").test(password) && XRegExp("[0-9]").test(password)
-            && XRegExp("[\\pS|\\pP]").test(password);
-            //has special
-  }else{
-    return false;
-  }
-}
-
-
-
+//------------------------------Support functions------------------------------
 /*
-The following functions "saveToFile" & "readFromFile" contain code from
+The following functions "saveToFile" & "readFromFile" contain example code from
 the nodejs api documenation, which is linked below.
 https://nodejs.org/api/fs.html
 
@@ -216,6 +113,107 @@ async function readFromFile(path){
     console.log('Data read from: ', path);
     return data;
   });
+}
+
+//Format verifiers
+function checkTownName(town){
+  //Check if string given is one of the two town names, if so return true
+  if(town.toLowerCase() === "lobitos" || town.toLowerCase() === "piedritas"){
+    return true;
+  }
+  return false;
+}
+
+function checkPassFormat(password){
+  //Password long enough
+  if(password.length >= 8){
+    //Has language chars                       has digit
+    return XRegExp("[\\pL]").test(password) && XRegExp("[0-9]").test(password)
+            && XRegExp("[\\pS|\\pP]").test(password);
+            //has special
+  }
+  return false;
+}
+
+//Secure functions
+//Used to generate account access cookies
+function generateAccessToken(username, sessionOnly){
+  const length = 127;
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  //Timeout for 30 days in the future
+  let timeout = new Date(Date.now() + 2592000*1000).toUTCString();
+  let token = "";
+  for(let i = 1; i <= length; i++){
+    if(i%8 === 0){
+      token = token + "-";
+    }else{
+      token = token + chars.charAt(crypto.randomInt(0, chars.length));
+    }
+  }
+  return (username + "=" + token + "; expires=" + timeout + "; secure=true");
+}
+
+function generateSalt(){
+  return crypto.randomBytes(256).toString();
+}
+
+function hashPassword(password, salt){
+  return crypto.pbkdf2Sync(password, salt, 100000, 256, "sha512");
+}
+//------------------------------Signup/Login/TokenHandling------------------------------
+function signup(data){
+  let response = {type: "signup", success: false, reason: "General Error, try again later", token: ""};
+  //Verify user input meets requirements
+  if(data.name.length >0 && nameRegex.test(data.name)){
+    if(data.username.length >= 5 && data.username.length <= 16 && usernameRegex.test(data.username)){
+      //If over13
+      if(data.over13){
+        //If username not already in database
+        if(!db.users.hasOwnProperty(data.username.toLowerCase())){
+          //If password matches minimum requrements
+          if(checkPassFormat(data.password)){
+            //Hash password
+            let salt = generateSalt();
+            let hashPass = hashPassword(data.password, salt).toString();
+            //Generate access token/cookie
+            let token = generateAccessToken(data.username.toLowerCase());
+            if(!checkTownName(data.town)){
+              data.townSelection = null;
+            }
+            //Add user to database
+            db.users[data.username.toLowerCase()] = {hashPass: hashPass, salt: salt
+              , name: data.name, over13: data.over13, townSelection: data.townSelection
+              ,tokens: [token]};
+            saveToFile(dbPaths.users, JSON.stringify(db.users));
+            response.success = true;
+            response.token = token;
+          }else{
+            //Password doesnt meet requirements
+            response.reason = "Password doesn't meet minimum requirements, see below:"
+            + "\n - At least 8 Characters Long"
+            + "\n - Include at least one langauge character"
+            + "\n - Include at least one 0-9 digit"
+            + "\n - Include at least one symbol";
+          }
+        }else{
+          //Username already in use
+          response.reason = "Username already in use";
+        }
+      }else{
+        //Under 13
+        response.reason = "You must be over 13 to use this service";
+      }
+    }else{
+      //Username doesn't meet requirements
+      response.reason = "Username must be between 5 & 16 characters long"
+      +" and can only contain language characters, numbers and an underscore '_'";
+    }
+  }else{
+    //Name doesnt meet requirements
+    response.reason = "Name must be at least one character"
+    +" and can only contain language characters and a hyphen '-'";
+  }
+  return response;
 }
 
 function login(data){
@@ -261,56 +259,46 @@ function checkToken(data){
   return false;
 }
 
-function verifyTown(town){
-  if(town.toLowerCase() === "lobitos" || town.toLowerCase() === "piedritas"){
-    return true;
-  }
-  return false;
-}
-
-  /*
-  let accessToken = data.split("=");
-  accessToken[1] = accessToken[1].substring(0,127)
-  if(db.users.hasOwnProperty(accessToken[0].toLowerCase())){
-    let user = db.users[accessToken[0].toLowerCase()];
-    //Check tokens to match
-    console.log("user", user);
-    for(let i = 0; i < user.tokens.length; i++){
-      let token = user.tokens[i];
-      console.log("token: ", token);
-      let validToken = token[1].split("=");
-      let validToken = validToken.substring(0,127);
-      console.log("valid token: ", token);
-      console.log("valid token: ", accessToken[1]);
-      if(new Date(token[].split(";")[1].substring(9)) < new Date(Date.now())){
-        if(accessToken[1] === validToken){
-          return true;
-        }
-      }
-    }
-  }*/
-
-function generateAccessToken(username, sessionOnly){
-  const length = 127;
-  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  //Timeout for 30 days in the future
-  let timeout = new Date(Date.now() + 2592000*1000).toUTCString();
-  let token = "";
-  for(let i = 1; i <= length; i++){
-    if(i%8 === 0){
-      token = token + "-";
+//------------------------------Notices Handling------------------------------
+function getNotices(data){
+  //Create empty array of notices and determine which the user has already seen
+  let notices = [];
+  let startPos = db.notices.length-1-data.alreadyPulled;
+  //Loop through notices and add to array
+  for(let i = startPos; i > startPos-10; i--){
+    //If no more exist break
+    if (i < 0){
+      break;
     }else{
-      token = token + chars.charAt(crypto.randomInt(0, chars.length));
+      notices.push(db.notices[i]);
     }
   }
-  return (username + "=" + token + "; expires=" + timeout + "; secure=true");
+  //return notices to user
+  return {type: "notices", data: notices};
 }
 
-//Password handling functions
-function generateSalt(){
-  return crypto.randomBytes(256).toString();
-}
-
-function hashPassword(password, salt){
-  return crypto.pbkdf2Sync(password, salt, 100000, 256, "sha512");
+function postNotice(data){
+  let response = {type: "postNotice", success: false, reason: "General Error, try again later"};
+  let username = "anon user";
+  //If logged in associate notice with user
+  if(checkToken(data.token)){
+    username = data.token.split("=")[0];
+  }
+  //Check Title is <= 32 chars & notice contains content and is <=512 chars
+  if(data.title.length <= 32){
+    if(data.notice.length <= 512 && data.notice.length > 0){
+      //verify town name and save to notices database
+      let town = checkTownName(data.town) ? data.town : "";
+      db.notices.push({username: username, title: data.title, notice: data.notice, town: town})
+      saveToFile(dbPaths.notices, JSON.stringify(db.notices));
+      response.success = true;
+    }else{
+      //Notice doesnt exist or isnt long enough
+      response.reason = "Notice must be more than 1 character and less than 512 characters";
+    }
+  }else{
+    //Title is too long
+    response.reason = "Title must be less than 32 characters";
+  }
+  return response;
 }

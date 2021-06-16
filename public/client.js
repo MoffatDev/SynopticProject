@@ -92,10 +92,10 @@ function addCookie(cookie){
   console.log(cookie.label, cookie.data, cookie.expires);
 }
 
-function checkLogin(){
+function checkToken(){
   let form = {};
   form.token = document.cookie;
-  sendPost("checkLogin", form);
+  sendPost("checkToken", form);
 }
 
 //------------------------------Communication functions------------------------------
