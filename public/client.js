@@ -49,7 +49,10 @@ function addNotice(){
   form.title = document.getElementById("noticeTitle").value;
   form.notice = document.getElementById("noticeDetails").value;
   form.town = document.getElementById("noticeTownSelection").value;
-  form.token = document.cookie;
+  form.token = "";
+  if(!document.getElementById("postAnon").checked){
+    form.token = document.cookie;
+  }
   sendPost("postNotice", form);
 }
 
@@ -87,6 +90,12 @@ function login(){
 
 function addCookie(cookie){
   console.log(cookie.label, cookie.data, cookie.expires);
+}
+
+function checkLogin(){
+  let form = {};
+  form.token = document.cookie;
+  sendPost("checkLogin", form);
 }
 
 //------------------------------Communication functions------------------------------
@@ -165,6 +174,11 @@ async function handleRes(res){
         pullNotices();
       }else{
         alert("Couldn't post: " + returned.reason);
+      }
+      break;
+    case "checkLogin":
+      if(returned.success){
+        alert("You're already logged in, signing up or logging into a different account will log you out")
       }
       break;
     default:

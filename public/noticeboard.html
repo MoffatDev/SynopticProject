@@ -34,11 +34,13 @@
             <textarea rows = "8" cols = "35" id = "noticeDetails" accesskey = "N" maxlength = "280" required></textarea><br>
 
             <label for = "noticeTownSelection">Select which town to tag as:</label><br>
-              <select id = "noticeTownSelection">
-                <option value = "none">None</option>
-                <option value = "Lobitos">Lobitos</option>
-                <option value = "Piedritas">Piedritas</option>
-              </select><br><br>
+            <select id = "noticeTownSelection">
+              <option value = "none">None</option>
+              <option value = "Lobitos">Lobitos</option>
+              <option value = "Piedritas">Piedritas</option>
+            </select><br>
+            <label for = "postAnon">Tick to post as an anon:</label><br>
+            <input type = "checkbox" id = "postAnon"><br><br>
             <input type="submit" id="submit" value="Add Notice" checked><br>
           </fieldset>
         </form>
@@ -115,6 +117,6 @@
       </div>
       </div>
       <button onclick="nextPageNotices()" type="button" id="nextPageButton" class = "noticeButton">Next Page</button>
-            <button onclick="lastPageNotices()" type="button" id="lastPageButton" class = "noticeButton" disabled>Previous Page</button>
+      <button onclick="lastPageNotices()" type="button" id="lastPageButton" class = "noticeButton" disabled>Previous Page</button>
     </main>
   </body>

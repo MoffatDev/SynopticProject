@@ -86,6 +86,13 @@ app.post('/postNotice', jsonParser, function (req, res) {
   res.json(response);
 });
 
+app.post('/checkLogin', jsonParser, function (req, res) {
+  console.log("Notice post request recieved: ", req.body);
+  let response = {type: "checkLogin", success: checkToken(req.body.token)};
+  //console.log('Response: ', response);
+  res.json(response);
+});
+
 //------------------------------Notice Handling------------------------------
 function getNotices(data){
   let notices = [];
