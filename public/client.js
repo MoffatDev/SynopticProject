@@ -26,18 +26,15 @@ function toggleNoticeForm(){
 
 //------------------------------Server dependent functions------------------------------
 function nextPageNotices(){
-  pullNotices(true);
+  noticesPage += 1
+  pullNotices();
 }
 function lastPageNotices(){
-  pullNotices(false);
+  noticesPage -= 1;
+  pullNotices();
 }
 
-function pullNotices(nextNotices){
-  if(nextNotices){
-    noticesPage += 1;
-  }else{
-    noticesPage -= 1;
-  }
+function pullNotices(){
   //Disable previous button if there aren't any previous
   if(noticesPage-1 > 0){
     document.getElementById("lastPageButton").disabled = false;
@@ -45,6 +42,24 @@ function pullNotices(nextNotices){
     document.getElementById("lastPageButton").disabled = true;
   }
   sendPost("getNotices", {alreadyPulled: (noticesPage-1)*10});
+}
+
+function addNotice(){
+  let form = {};
+  form.title = document.getElementById("noticeTitle").value;
+  form.notice = document.getElementById("noticeDetails").value;
+  form.town = document.getElementById("noticeTownSelection").value;
+  form.token = document.cookie;
+  sendPost("postNotice", form);
+}
+
+//Function to clear old cookies
+function clearCookies(){
+  let cookies = document.cookie.split("; ");
+  for(let i = 0; i < cookies.length; i++){
+    let cookie = cookies[i];
+    document.cookie = cookie + "; expires=expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+  }
 }
 
 
@@ -96,6 +111,7 @@ async function handleRes(res){
   switch(returned.type){
     case "signup":
       if(returned.success){
+        clearCookies();
         document.cookie = returned.token;
         alert("Signup Success: Please rememember your username & password");
       }else{
@@ -104,6 +120,7 @@ async function handleRes(res){
       break;
     case "login":
       if(returned.success){
+        clearCookies();
         document.cookie = returned.token;
         alert("Login Success");
       }else{
@@ -124,11 +141,25 @@ async function handleRes(res){
           let headers = notices[i].getElementsByClassName("noticeHeader");
           headers[0].innerText = returned.data[i].username;
           headers[1].innerText = returned.data[i].title;
-          headers[2].innerText = returned.data[i].town;
+          if(returned.data[i].town == ""){
+            headers[2].style.display = "none";
+          }else{
+            headers[2].style.display = "inline-block";
+            headers[2].innerText = returned.data[i].town;
+          }
           notices[i].getElementsByClassName("noticeDetails")[0].innerText = returned.data[i].notice;
         }else{
           notices[i].style.display = "none";
         }
+      }
+      break;
+    case "postNotice":
+      if(returned.success){
+        alert("Notice posted!");
+        toggleNoticeForm();
+        pullNotices();
+      }else{
+        alert("Couldn't post: " + returned.reason);
       }
       break;
     default:

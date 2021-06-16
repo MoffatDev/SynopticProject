@@ -28,10 +28,10 @@
           <fieldset>
             <p>Please note an asterix (*) indicates a required field</p>
             <label for = "noticeTitle">Notice title:</label><br>
-            <input type = "text" id = "noticeTitle" accesskey = "T"><br>
+            <input type = "text" id = "noticeTitle" accesskey = "T" maxlength = "16"><br>
 
-            <label for = "notice">Notice*:</label><br>
-            <textarea rows = "5" cols = "35" id = "notice" accesskey = "N" required></textarea><br>
+            <label for = "noticeDetails">Notice*:</label><br>
+            <textarea rows = "8" cols = "35" id = "noticeDetails" accesskey = "N" maxlength = "280" required></textarea><br>
 
             <label for = "noticeTownSelection">Select which town to tag as:</label><br>
               <select id = "noticeTownSelection">
@@ -50,6 +50,7 @@
         <p class = "noticeDetails">Visit <a href = "https://www.who.int/es/health-topics/coronavirus">www.who.int</a> for
           accurate COVID-19 information</p>
       </div>
+      <button onclick="pullNotices()" type="button" id="refreshNotices">Refresh</button>
       <!-- 10 notices -->
       <div id = "regularNotices">
       <div class = "notice">

@@ -57,26 +57,32 @@ app.listen(3000, function () {
   console.log('Serving website on localhost:3000');
 });
 
-
 //------------------------------Client/Server communication------------------------------
 app.post('/signup', jsonParser, function (req, res) {
   console.log("Signup recieved: ", req.body);
   let response = signup(req.body);
-  console.log('Response: ', response);
+  //console.log('Response: ', response);
   res.json(response);
 });
 
 app.post('/login', jsonParser, function (req, res) {
   console.log("Login recieved: ", req.body);
   let response = login(req.body);
-  console.log('Response: ', response);
+  //console.log('Response: ', response);
   res.json(response);
 });
 
 app.post('/getNotices', jsonParser, function (req, res) {
-  console.log("Notice request recieved: ", req.body);
+  console.log("Get notice request recieved: ", req.body);
   let response = getNotices(req.body);
-  console.log('Response: ', response);
+  //console.log('Response: ', response);
+  res.json(response);
+});
+
+app.post('/postNotice', jsonParser, function (req, res) {
+  console.log("Notice post request recieved: ", req.body);
+  let response = postNotice(req.body);
+  //console.log('Response: ', response);
   res.json(response);
 });
 
@@ -94,12 +100,36 @@ function getNotices(data){
   return {type: "notices", data: notices};
 }
 
+function postNotice(data){
+  //Title, notice, town, and maybe token
+  let response = {type: "postNotice", success: false, reason: "General Error, try again later"};
+  let username = "-Anon-";
+  //If logged in associate notice with user
+  if(checkToken(data.token)){
+    username = data.token.split("=")[0];
+  }
+  //Check Title is <= 32 chars
+  if(data.title.length <= 32){
+    if(data.notice.length <= 512){
+      let town = verifyTown(data.town) ? data.town : "";
+      db.notices.push({username: username, title: data.title, notice: data.notice, town: town})
+      saveToFile(dbPaths.notices, JSON.stringify(db.notices));
+      response.success = true;
+    }else{
+      response.reason = "Notice is too long, maxium of 512 characters";
+    }
+  }else{
+    response.reason = "Title is too long, maxium of 32 characters";
+  }
+  return response;
+}
+
 
 //------------------------------Signup Handling------------------------------
 function signup(data){
   let response = {type: "signup", success: false, reason: "General Error, try again later", token: ""};
   if(data.name.length >0 && nameRegex.test(data.name)){
-    if(data.username.length >= 5 && usernameRegex.test(data.username)){
+    if(data.username.length >= 5 && data.username.length <= 16 && usernameRegex.test(data.username)){
       //If over13
       if(data.over13){
         //If username not already in database
@@ -134,7 +164,7 @@ function signup(data){
         response.reason = "You must be over 13 to use this service";
       }
     }else{
-      response.reason = "Username must be 5 characters or longer"
+      response.reason = "Username must be between 5 & 16 characters long"
       +" and can only contain language characters, numbers and an underscore '_'";
     }
   }else{
@@ -201,13 +231,65 @@ function login(data){
   return response;
 }
 
+function checkToken(data){
+  //Split token into useful components
+  let givenData = data.split("=");
+  //Search database for user
+  if(db.users.hasOwnProperty(givenData[0])){
+    let user = db.users[givenData[0]];
+    //Loop through the user's tokens
+    for(let i = 0; i < user.tokens.length; i++){
+      let token = user.tokens[i];
+      //If its expired delete the token & save
+      let tokenExpirary = new Date(token.split(";")[1].substring(9));
+      if(tokenExpirary < new Date(Date.now)){
+        db.users[givenData[0]].tokens.splice(user.tokens.indexOf(token), 1);
+        saveToFile(dbPaths.users, JSON.stringify(db.users));
+      //Otherwise check if the token is valid
+      }else if(givenData[1] === token.split("=")[1].substring(0, 127)){
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function verifyTown(town){
+  if(town.toLowerCase() === "lobitos" || town.toLowerCase() === "piedritas"){
+    return true;
+  }
+  return false;
+}
+
+  /*
+  let accessToken = data.split("=");
+  accessToken[1] = accessToken[1].substring(0,127)
+  if(db.users.hasOwnProperty(accessToken[0].toLowerCase())){
+    let user = db.users[accessToken[0].toLowerCase()];
+    //Check tokens to match
+    console.log("user", user);
+    for(let i = 0; i < user.tokens.length; i++){
+      let token = user.tokens[i];
+      console.log("token: ", token);
+      let validToken = token[1].split("=");
+      let validToken = validToken.substring(0,127);
+      console.log("valid token: ", token);
+      console.log("valid token: ", accessToken[1]);
+      if(new Date(token[].split(";")[1].substring(9)) < new Date(Date.now())){
+        if(accessToken[1] === validToken){
+          return true;
+        }
+      }
+    }
+  }*/
+
 function generateAccessToken(username, sessionOnly){
-  const length = 128;
+  const length = 127;
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   //Timeout for 30 days in the future
   let timeout = new Date(Date.now() + 2592000*1000).toUTCString();
   let token = "";
-  for(let i = 1; i < length; i++){
+  for(let i = 1; i <= length; i++){
     if(i%8 === 0){
       token = token + "-";
     }else{

@@ -39,6 +39,11 @@
 .noticeButton{
   margin: 5px;
 }
+#refreshNotices{
+	width: 95%;
+	height: 20px;
+}
+
 /*------------------Body/Main------------------*/
 body{
     margin: 0;
