@@ -180,9 +180,10 @@ legend, h1, h2{
   display: none;
 }
 
-#sidebar input[type = "text"]{
+#sidebar input[type = "text"], #sidebar input[type = "number"], #sidebar select{
   min-width: 90%;
 }
+
 
 #sidebar legend{
   margin-top: 10px;
@@ -225,7 +226,6 @@ legend, h1, h2{
   width: auto;
   min-width: auto;
   background-color: #f1f1f1;
-  float: center;
   border: 1px solid #ccc;
   outline: none;
   cursor: pointer;
@@ -246,7 +246,7 @@ legend, h1, h2{
   border: 1px solid #cccccc;
   bottom: 12px;
   left: -50px;
-  min-width: 280px;
+  min-width: 250px;
 }
 
 .ol-popup:after, .ol-popup:before {

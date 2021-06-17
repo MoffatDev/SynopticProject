@@ -1,6 +1,4 @@
 window.onload = init; // Intialize Map upon Window Load.
-
-const HOTSPOTS = [[]];  // Hotspot Array Obj.
 var mapObj = "";  // Global Map Obj;
 
 function init() { // Initialization Function.
@@ -96,35 +94,29 @@ function init() { // Initialization Function.
         checkPoint(e.coordinate);  // Checks if Point is Hotspot.
 
     })
-
-    // Hotspot Values.
-    HOTSPOTS[0] = { LONG: -9047833 , LAT: -496186 , NAME: "Title" , EL: 1 , WA: 1 };
-    HOTSPOTS[1] = { LONG: -9048614 , LAT: -496642 , NAME: "Church" , EL: 2, WA: 4};
-    HOTSPOTS[3] = { LONG: -9048277 , LAT: -496398 , NAME: "La Casona" , EL: 4 , WA: 4};
-    HOTSPOTS[2] = { LONG: 1, LAT: 1, NAME: "Wonderland" , EL: 2 , WA: 2};
-
-    console.log("Known Hotspots: ");  // Debuging Prompt.
-
-    listPoints();  // List all Hotspots.
 }
 
-function listPoints() { // Function to List all registered Hotspots.
-
-    // Iterates through Hotspots , display attributes to Screen.
-    HOTSPOTS.forEach(function(value) {
-
-        console.log(value.LONG + " , " + value.LAT + ": " + value.NAME);
-
-    });
+function recenterOnTown(){
+  let town = document.getElementById("centreOnTownSelection").value;
+  if(town === "Lobitos"){
+    reCentreMap([ -9047783.58 , -496188.42]);
+  }else{
+    reCentreMap([ -9046524.067 , -505585.593 ]);
+  }
 }
 
 function toggleSideBar(){
+  //Get sidebar and map
   let sidebar = document.getElementById("sidebar");
   let map = document.getElementById("map");
+  //If sidebar is already extended, set its width to zero and return map
+  //to normal as well, hide sidebar content
   if(sidebar.style.width === "250px"){
     sidebar.style.width = "0px";
     map.style.marginLeft = "0px";
     sidebar.style.display = "none";
+  //If sidebar is not already extended, set its width to 250 and add margin to
+  //map to move it out the way, show sidebar cotent
   }else{
     sidebar.style.width = "250px";
     map.style.marginLeft = "250px";
@@ -132,6 +124,7 @@ function toggleSideBar(){
   }
 }
 
+//Switches between the add and check hotspot form
 function toggleHotSpotForm(){
   let addSpot = document.getElementById("addSpot");
   let checkSpot = document.getElementById("checkSpot");
@@ -180,7 +173,6 @@ function reCentreMap(centre) {  // Function to Recentre Map at specific Location
 }
 
 function popUp(coords , WATER , EL, msg) {  // Function to create and Display Popup at selected Location and with optional Message.
-
     // Variable assignment for Coords , Container for Popup div , Popup Content , Popup Closer & Popup Magnification.
 
     var coor = coords ,
@@ -199,17 +191,16 @@ function popUp(coords , WATER , EL, msg) {  // Function to create and Display Po
     });
     mapObj.addOverlay(overlay); // Add Overlay to Map.
 
-    console.log(coor); // Debug prompt.
-
     // Checks if Message is null.
     if (msg == null) {
         msg = "Unknown Location";
     }
 
-    console.log(EL);
 
     // Assigns Content of Popup.
-    content.innerHTML = '<p>' + msg + '<br>Electricity:' + EL + '<br>Water:' + WATER + '</p>';
+    let elString = "<br>" + (EL ? "Has": "Doesn't have") + " Electricity";
+    let waterString = "<br>" + (WATER ? "Has": "Doesn't have") + " Water";
+    content.innerHTML = '<p>' + msg + elString + waterString + '</p>';
     overlay.setPosition(coor); // Sets posistion of Overlay.
 
     // Magnification Function.
@@ -229,170 +220,57 @@ function popUp(coords , WATER , EL, msg) {  // Function to create and Display Po
     container.style.display = "block";
 }
 
-function checkPoint(coords) {  // Function to Check a selected Point from a User Click against registered Hotspots.
-
-    clearMessages();
-
-    // Get Selected Location Values.
-    let LONG = Math.round(coords[0]) , LAT = Math.round(coords[1]);
-
-    console.log("Selected Location: " + LONG + " , " + LAT + " , Checking for Hotspot"); // Debug Prompt.
-
-    // Webpage Message.
-    toPage("CResult" , "Selected Location: " + LONG + " , " + LAT);
-    toPage("AResult" , "Selected Location: " + LONG + " , " + LAT);
-
-    var VERIFY = false;
-
-    // Iterate through Hotspots.
-    HOTSPOTS.forEach(function(value) {
-
-        // Checks if selected Coords are within range of any regsitered Hotspots.
-        if ( ( LONG <= (value.LONG + 10)) && (LONG >= (value.LONG - 10)) && (LAT <= (value.LAT + 10)) && (LAT >= (value.LAT - 10)) ) {
-
-            console.log("Selected Location matches Hotspot: " + value.NAME);  // Debug Prompt.
-
-            // Message Variable.
-            var txt = "Found Hotspot: " + value.NAME + "<br> Electricty Status: " + value.EL + "<br> Water Status: " + value.WA;
-
-            // Webpage Message.
-            toPage("CResult" , txt);
-
-            // New Popup at Location.
-            popUp([ value.LONG , value.LAT ] , value.WA , value.EL , value.NAME + ": " + value.LONG + " , " + value.LAT);
-
-            VERIFY = true;
-        }
-    });
-
-    if (!VERIFY) {
-        popUp([ LONG , LAT ] , "Unkwnon" , "Unknown");
-    }
+function checkPoint(coords){
+  // Get Selected Location Values.
+  let long = Math.round(coords[0]) , lat = Math.round(coords[1]);
+  document.getElementById("checkLong").value = long;
+  document.getElementById("checkLat").value = lat;
+  checkSpot();
 }
 
-function checkUserPoint(ULAT , ULONG , UNAME) {  // Function to Check a User-Entered Point against registered Hotspots.
 
-    clearMessages();
-
-    // Variables for User-Entered Values.
-    var LAT = ULAT.value ,
-    LONG = ULONG.value ,
-    NAME = String(UNAME.value) ,
-    VALID = true;
-
-    // Conditionals to check for missing Values.
-    if ( (LAT.length == 0 || LONG.length == 0) && NAME === "") {
-        toPage("CError" , "Please enter both Longitude & Latitude Coords");
-        VALID = false;
-    } else if ((LAT.length == 0 || LONG.length == 0) || NAME !== "") {
-        VALID = true;
-    }
-
-    if (NAME === "") {
-        toPage("CError" , "Please enter a Hotspot Name");
-        VALID = false;
-    }
-
-    if (VALID) {
-        // Debug Prompt.
-        console.log(LONG);
-        console.log(LAT);
-        console.log(NAME);
-
-        // Iteration through all knwon spots.
-        for (let i = 0; i < HOTSPOTS.length; i++) {
-            if (LONG == HOTSPOTS[i].LONG && LAT == HOTSPOTS[i].LAT) { // Checks for Coords Match
-                toPage("CResult" , "Hotspot Found with Coords: " + LONG + " , " + LAT);  // Screen Message
-                popUp( [ HOTSPOTS[i].LONG , HOTSPOTS[i].LAT ] ,
-                    HOTSPOTS[i].WA , HOTSPOTS[i].EL,
-                    HOTSPOTS[i].NAME + ": " + HOTSPOTS[i].LONG + " , " + HOTSPOTS[i].LAT ); // Popup at Location
-
-                VALID = false;
-            } else if (NAME === HOTSPOTS[i].NAME) {  // Checks for Name Match
-                toPage("CResult" , "Hotspot Found with Name: " + NAME ); // Screen Message.
-                popUp( [ HOTSPOTS[i].LONG , HOTSPOTS[i].LAT ] ,
-                    HOTSPOTS[i].WA , HOTSPOTS[i].EL,
-                    HOTSPOTS[i].NAME + ": " + HOTSPOTS[i].LONG + " , " + HOTSPOTS[i].LAT ); // Popup at Location
-
-                VALID = false;
-            }
-        }
-
-        if (VALID) {
-            toPage("CError" , "No Hotspot was Found"); // Screen Message.
-        }
-    }
+function checkSpot(){
+  //close sidebar if it is open
+  if(document.getElementById("sidebar").style.display == "inline"){
+    toggleSideBar();
+  }
+  let form = {};
+  form.name = document.getElementById("checkName").value;
+  form.long = document.getElementById("checkLong").value;
+  form.lat = document.getElementById("checkLat").value;
+  sendPost("checkSpot", form);
 }
 
-function addPoint(ULONG , ULAT , UNAME , UWATER , UEL) {  // Function to add a Hotspot.
+function sendPost(path, data) {
+  console.log("Posting following to " + path, data)
+	fetch(path, {
+		method: "POST",
+		body: JSON.stringify(data),
+		headers:{
+			"Content-Type": "application/json"
+		}
+	})
+  .then(handleRes);
+};
 
-    clearMessages();
-
-    // Variables for User-Enetred Values.
-    var LAT = ULAT.value ,
-    LONG = ULONG.value ,
-    NAME = String(UNAME.value) ,
-    EL = UEL.value ,
-    WA = UWATER.value ,
-    VALID = true,
-    VERIFY = true;
-
-    // Error Handling.
-    if (LONG.length == 0 || LAT.length == 0) {
-        toPage("AError" , "Please enter both Longitude & Latitude Coords.");
-        VALID = false;
-    }
-
-    if (NAME == "") {
-        toPage("AError" , "Please enter a Hotspot Name.");
-        VALID = false;
-    }
-
-    if (EL.length == 0) {
-        toPage("AError" , "Please enter an Electricity Level.");
-        VALID = false;
-    }
-
-    if (WA.length == 0) {
-        toPage("AError" , "Please enter a Water Level.");
-        VALID = false;
-    }
-
-    if (VALID) {
-        // Debug Prompt.
-        console.log(LONG);
-        console.log(LAT);
-        console.log(UNAME.value);
-        console.log(EL);
-        console.log(WA);
-
-        // Iterate thropugh Hotpsots
-        for (let i = 0; i < HOTSPOTS.length; i++) {
-            if (LONG == HOTSPOTS[i].LONG && LAT == HOTSPOTS[i].LAT) { // Check for Coor Match
-                toPage("AError" , "The entered Coords are already registered to a Hotspot."); // Screen Message.
-                VERIFY = false;
-            }
-
-            if (NAME === HOTSPOTS[i].NAME) {  // Check for Name Match.
-                toPage("AError" , "The entered Name is already registered to a Hotspot");  // Screen Message
-                VERIFY = false;
-            }
-        }
-
-        if (VERIFY) {
-            toPage("AResult" , "Hotspot Added as " + NAME); // Screen Message.
-            popUp( [ LONG , LAT] , WA , EL , NAME ); // Popup.
-        }
-    }
+//Response handler
+async function handleRes(res){
+  //Await promise to fufill
+  let returned = await res.json();
+  console.log("Server JSON response: ", returned);
+  if(returned.success){
+    popUp( [ returned.data.long , returned.data.lat ] ,
+        returned.data.hasWater , returned.data.hasElectricity,
+        returned.data.name + ": " + returned.data.long + " , " + returned.data.lat); // Popup at Location
+  }
 }
 
-function toPage(element , msg) {  // Function to Print a Message to webpage.
-    document.getElementById(element).innerHTML = msg;
+
+
+function addSpot() {
+  alert("Not currently supported!");
 }
 
-function clearMessages() {
-    document.getElementById("CResult").innerHTML = "";
-    document.getElementById("AResult").innerHTML = "";
-    document.getElementById("CError").innerHTML = "";
-    document.getElementById("AError").innerHTML = "";
+function toPage(data){
+  console.log(data);
 }

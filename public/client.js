@@ -65,7 +65,6 @@ function clearCookies(){
   }
 }
 
-
 function signup(){
   //Obtain signup data
   let form = {};

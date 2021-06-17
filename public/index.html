@@ -26,27 +26,29 @@
                 <div id = "mapOverlayOptions">
                   <input type = "radio" name = 'selectLayer' value = "Simplistic" checked>Simplistic<br>
                   <input type = "radio" name = 'selectLayer' value = "Detailed" >Detailed<br>
-                  <input type = "radio" name = 'selectLayer' value = "HighContrast" >High Contrast<br>
+                  <input type = "radio" name = 'selectLayer' value = "HighContrast" >High Contrast<br><br>
                 </div>
+                <label for = "centreOnTownSelection">Select which town to center on:</label><br>
+                <select id = "centreOnTownSelection" onchange = "recenterOnTown()">
+                  <option value = "Lobitos">Lobitos</option>
+                  <option value = "Piedritas">Piedritas</option>
+                </select><br>
                 <div id="checkSpot">
                     <form>
                       <fieldset>
                         <legend>Check Hotspot</legend>
-                        <label for="UserLONG">Longitude:</label><br>
-                        <input type="text" id="UserLONG" name="UserLONG"><br>
-                        <label for="UserLAT">Latitude:</label><br>
-                        <input type="text" id="UserLAT" name="UserLAT"><br>
-                        <label for="UserNAME">Name:</label><br>
-                        <input type="text" id="UserNAME" name="UserNAME"><br>
+                        <label for="checkLong">Longitude:</label><br>
+                        <input type="number" id="checkLong"><br>
+                        <label for="checkLat">Latitude:</label><br>
+                        <input type="number" id="checkLat"><br>
+                        <label for="checkName">Name:</label><br>
+                        <input type="text" id="checkName" maxlength = "64"><br>
 
                         <br>
 
-                        <button onclick = "checkUserPoint(UserLONG , UserLAT , UserNAME)">Check Hotspot</button>
+                        <button onclick = "checkSpot()" type = "button">Check Hotspot</button>
                       </fieldset>
                     </form>
-
-                    <p id = "CResult"></p>
-                    <p id = "CError"></p>
                 </div>
 
                 <div id="addSpot">
@@ -65,13 +67,12 @@
                         <label for = "hasElectricity">Has Electricity:</label>
                         <input type = "checkbox" id = "hasElectricity"><br><br>
 
-                        <button onclick = "addPoint(UserLONG , UserLAT2, UserNAME2 , UserWAT , UserEL)">Add Hotspot</button>
+                        <button onclick = "addSpot()" type = "button">Add Hotspot</button>
                       </fieldset>
                     </form>
-                    <p id = "AResult"></p>
-                    <p id = "AError"></p>
                 </div>
                 <button id = "toggleHotSpotForm" onclick = "toggleHotSpotForm()">Add Hotspot</button>
+                <p id = "result"></p>
               </div>
 
             <div id="map" class="map">

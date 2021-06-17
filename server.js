@@ -22,7 +22,7 @@ const dbPaths = {
 let db = {
   users: {},
   notices: [],
-  mapPoints: {}
+  mapPoints: [{name: "church", long: -9048614, lat: -496642, hasElectricity: true, hasWater: false}]
 };
 //Loop through all db files & load in data
 for (element in dbPaths){
@@ -88,6 +88,13 @@ app.post('/checkToken', jsonParser, function (req, res) {
   //Log request, process then return
   console.log("Check token request recieved: ", req.body);
   let response = {type: "checkLogin", success: checkToken(req.body.token)};
+  res.json(response);
+});
+
+app.post('/checkSpot', jsonParser, function (req, res) {
+  //Log request, process then return
+  console.log("Check for hotspot request recieved");
+  let response = checkSpot(req.body);
   res.json(response);
 });
 
@@ -177,7 +184,7 @@ function signup(data){
             let hashPass = hashPassword(data.password, salt).toString();
             //Generate access token/cookie
             let token = generateAccessToken(data.username.toLowerCase());
-            if(!checkTownName(data.town)){
+            if(!checkTownName(data.townSelection)){
               data.townSelection = null;
             }
             //Add user to database
@@ -299,6 +306,24 @@ function postNotice(data){
   }else{
     //Title is too long
     response.reason = "Title must be less than 32 characters";
+  }
+  return response;
+}
+
+//------------------------------Map data handling------------------------------
+function checkSpot(data){
+  let response = {type: "checkSpot", success: false, data: {}}
+  console.log(db.mapPoints);
+  for(let i = 0; i < db.mapPoints.length; i++){
+    let point = db.mapPoints[i];
+    console.log(data);
+    console.log(point);
+    //If found, return it
+    if(point.name.toLowerCase() == data.name.toLowerCase() ||
+    (Math.abs(point.lat - data.lat) <=10  && Math.abs(point.long - data.long) <=10)){
+      response.data = point;
+      response.success = true;
+    }
   }
   return response;
 }
