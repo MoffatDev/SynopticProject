@@ -22,7 +22,7 @@ const dbPaths = {
 let db = {
   users: {},
   notices: [],
-  mapPoints: [{name: "church", long: -9048614, lat: -496642, hasElectricity: true, hasWater: false}]
+  mapPoints: []
 };
 //Loop through all db files & load in data
 for (element in dbPaths){
