@@ -225,6 +225,7 @@ function checkPoint(coords){
   let long = Math.round(coords[0]) , lat = Math.round(coords[1]);
   document.getElementById("checkLong").value = long;
   document.getElementById("checkLat").value = lat;
+  document.getElementById("checkName").value = "";
   checkSpot();
 }
 
