@@ -5,14 +5,12 @@ body{
     padding: 0;
     text-align: center;
     font-family: 'Helvetica', sans-serif;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 /*Keeps content in center of window*/
 main{
   margin: auto;
-  padding: 10px;
   text-align: center;
 	max-width: 700px;
   min-width: 300px;
@@ -108,12 +106,12 @@ fieldset{
 /*Style form titles and h1 to be the same*/
 legend, h1, h2{
   font-weight: normal;
+  margin-top: 10px;
   font-size: 150%;
   background-color: #222222;
   color: white;
   border-radius: 3px;
   padding: 0px;
-  margin-top: 0px;
   padding-top: 5px;
   padding-bottom: 5px;
   width: 100%;
@@ -173,7 +171,6 @@ legend, h1, h2{
   background: white;
   width: 0px;
   position: fixed;
-  padding-top: 10px; 
   text-align: center;
   transition: 0.2s;
   left: 0;
@@ -186,7 +183,6 @@ legend, h1, h2{
 
 
 #sidebar legend{
-  margin-top: 10px;
   font-size: 100%
 }
 
@@ -230,7 +226,7 @@ legend, h1, h2{
   outline: none;
   cursor: pointer;
   padding: 10px 14px;
-  font-size: 13;
+  font-size: 13px;
   transition: 0.3s;
 }
 

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +21,8 @@
           <a href="noticeboard.html">Noticeboard</a>
           <a href="signup_login.html">Login/Signup</a>
         </nav>
-      <header>
+    </header>
+    <main>
             <div id = "sidebar">
                 <h1>Map Options</h1>
                 <div id = "mapOverlayOptions">
@@ -55,12 +57,12 @@
                     <form>
                       <fieldset>
                         <legend>Add Hotspot</legend>
-                        <label for="UserLONG">Longitude:</label><br>
-                        <input type="text" id="UserLONG" name="UserLONG"><br>
-                        <label for="UserLAT">Latitude:</label><br>
-                        <input type="text" id="UserLAT2" name="UserLAT"><br>
-                        <label for="UserNAME">Name:</label><br>
-                        <input type="text" id="UserNAME2" name="UserNAME"><br>
+                        <label for="addSpotLong">Longitude:</label><br>
+                        <input type="text" id="addSpotLong" name="addSpotLong"><br>
+                        <label for="addSpotLat">Latitude:</label><br>
+                        <input type="text" id="addSpotLat" name="addSpotLat"><br>
+                        <label for="addSpotName">Name:</label><br>
+                        <input type="text" id="addSpotName" name="addSpotName"><br>
 
                         <label for = "hasWater">Has water:</label>
                         <input type = "checkbox" id = "hasWater"><br>
@@ -74,7 +76,7 @@
                 <button id = "toggleHotSpotForm" onclick = "toggleHotSpotForm()">Add Hotspot</button>
                 <p id = "result"></p>
               </div>
-
+</main>
             <div id="map" class="map">
 
             </div>
@@ -85,8 +87,5 @@
                 <div id="popup-content"></div>
             </div>
             <button id = "sidebarButton" onclick = "toggleSideBar()">⚙</button>
-    </div>
-
-
 </body>
 </html>
