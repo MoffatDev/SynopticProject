@@ -8,7 +8,7 @@ const crypto = require('crypto');
 //Extended unicode regex support, used to verify some user input
 const XRegExp = require('xregexp');
 const usernameRegex = XRegExp("^[\\pL|\\pN|_]*$");
-const nameRegex = XRegExp("^[\\pL|-| ]*$");
+const nameRegex = XRegExp("^[\\pL|\\pZ|-]*$");
 //File system access and paths
 const fs = require('fs');
 const dbPaths = {

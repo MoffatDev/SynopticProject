@@ -47,7 +47,7 @@ nav a:hover, .selected {
 }
 
 /*Buttons*/
-#submit, button{
+.submit, button{
   margin: 5px;
 	border: none;
 	width: 50%;
@@ -64,7 +64,7 @@ button:disabled{
   pointer-events: none;
 }
 
-#submit:hover, button:hover{
+.submit:hover, button:hover{
   color: black;
 	background-color: #DDDDDD;
 }
@@ -163,7 +163,7 @@ legend, h1, h2{
 }
 
 
-/*new stuff*/
+/*Maps page & sidebar functionality*/
 
 #sidebar{
   height: 100%;
@@ -186,7 +186,7 @@ legend, h1, h2{
   font-size: 100%
 }
 
-#sidebar h1, legend{
+#sidebar h1, #sidebar legend{
   border-radius: 0px;
 }
 

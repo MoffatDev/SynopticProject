@@ -32,10 +32,10 @@
 
             <!--User input-->
             <label for = "noticeTitle">Notice title:</label><br>
-            <input type = "text" id = "noticeTitle" accesskey = "T" maxlength = "16"><br>
+            <input type = "text" id = "noticeTitle" accesskey = "T" maxlength = "32"><br>
 
             <label for = "noticeDetails">Notice*:</label><br>
-            <textarea rows = "8" cols = "35" id = "noticeDetails" accesskey = "N" maxlength = "280" required></textarea><br>
+            <textarea rows = "8" cols = "35" id = "noticeDetails" accesskey = "N" maxlength = "512" required></textarea><br>
 
             <label for = "noticeTownSelection">Select which town to tag as:</label><br>
             <select id = "noticeTownSelection">
@@ -48,7 +48,7 @@
             <input type = "checkbox" id = "postAnon"><br><br>
 
             <!--Submission button-->
-            <input type="submit" id="submit" value="Add Notice"><br>
+            <input type="submit" class = "submit" value="Add Notice"><br>
           </fieldset>
         </form>
       </div>
