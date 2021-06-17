@@ -1,21 +1,91 @@
-<!DOCTYPE html>
-<html lang = "en">
-  <head>
-    <!--Title-->
-    <title>Maps</title>
-    <!--CSS-->
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <!--Content-->
-  <body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map</title>
+
+    <link rel = "stylesheet" href = "./style.css">
+    <link rel = "stylesheet" href = "./libs/v6.5.0-dist/ol.css">
+    <script src = './map.js'></script>
+    <script src = './libs/v6.5.0-dist/ol.js'></script>
+
+
+</head>
+<body>
+
     <header>
-      <nav>
-        <!--Nav bar links-->
-        <a href="index.html" class = "selected">Map</a>
-        <a href="noticeboard.html" >Noticeboard</a>
-        <a href="signup_login.html">Login/Signup</a>
-      </nav>
-    <header>
-    <main>
-    </main>
-  </body>
+        <nav>
+          <!--Nav bar links-->
+          <a href="index.html" class = "selected">Map</a>
+          <a href="noticeboard.html">Noticeboard</a>
+          <a href="signup_login.html">Login/Signup</a>
+        </nav>
+      <header>
+            <div id = "sidebar">
+                <h1>Map Options</h1>
+                <div id = "mapOverlayOptions">
+                  <input type = "radio" name = 'selectLayer' value = "Simplistic" checked>Simplistic<br>
+                  <input type = "radio" name = 'selectLayer' value = "Detailed" >Detailed<br>
+                  <input type = "radio" name = 'selectLayer' value = "HighContrast" >High Contrast<br>
+                </div>
+                <div id="checkSpot">
+                    <form>
+                      <fieldset>
+                        <legend>Check Hotspot</legend>
+                        <label for="UserLONG">Longitude:</label><br>
+                        <input type="text" id="UserLONG" name="UserLONG"><br>
+                        <label for="UserLAT">Latitude:</label><br>
+                        <input type="text" id="UserLAT" name="UserLAT"><br>
+                        <label for="UserNAME">Name:</label><br>
+                        <input type="text" id="UserNAME" name="UserNAME"><br>
+
+                        <br>
+
+                        <button onclick = "checkUserPoint(UserLONG , UserLAT , UserNAME)">Check Hotspot</button>
+                      </fieldset>
+                    </form>
+
+                    <p id = "CResult"></p>
+                    <p id = "CError"></p>
+                </div>
+
+                <div id="addSpot">
+                    <form>
+                      <fieldset>
+                        <legend>Add Hotspot</legend>
+                        <label for="UserLONG">Longitude:</label><br>
+                        <input type="text" id="UserLONG" name="UserLONG"><br>
+                        <label for="UserLAT">Latitude:</label><br>
+                        <input type="text" id="UserLAT2" name="UserLAT"><br>
+                        <label for="UserNAME">Name:</label><br>
+                        <input type="text" id="UserNAME2" name="UserNAME"><br>
+
+                        <label for = "hasWater">Has water:</label>
+                        <input type = "checkbox" id = "hasWater"><br>
+                        <label for = "hasElectricity">Has Electricity:</label>
+                        <input type = "checkbox" id = "hasElectricity"><br><br>
+
+                        <button onclick = "addPoint(UserLONG , UserLAT2, UserNAME2 , UserWAT , UserEL)">Add Hotspot</button>
+                      </fieldset>
+                    </form>
+                    <p id = "AResult"></p>
+                    <p id = "AError"></p>
+                </div>
+                <button id = "toggleHotSpotForm" onclick = "toggleHotSpotForm()">Add Hotspot</button>
+              </div>
+
+            <div id="map" class="map">
+
+            </div>
+
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <a href="#" id="popup-magn" class="ol-popup-magn"></a>
+                <div id="popup-content"></div>
+            </div>
+            <button id = "sidebarButton" onclick = "toggleSideBar()">⚙</button>
+    </div>
+
+
+</body>
+</html>

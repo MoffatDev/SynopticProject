@@ -44,12 +44,13 @@ nav a:hover, .selected {
 
 /*------------------User Interaction Section------------------*/
 /*Hide specific forms & elements on first load*/
-#signupForm, #noticeForm, .notice{
+#signupForm, #noticeForm, .notice, #addSpot{
   display: none;
 }
 
 /*Buttons*/
 #submit, button{
+  margin: 5px;
 	border: none;
 	width: 50%;
   min-width: 200px;
@@ -88,6 +89,13 @@ input, select, textarea{
   padding: 5px;
 	margin-bottom: 4px;
 }
+input[type = "radio"], input[type = "checkbox"]{
+  width: auto;
+  display: inline;
+  min-width: 0px;
+}
+
+
 
 /*------------------Form Stlying------------------*/
 /*Disable field outline*/
@@ -98,7 +106,7 @@ fieldset{
 }
 
 /*Style form titles and h1 to be the same*/
-legend, h1{
+legend, h1, h2{
   font-weight: normal;
   font-size: 150%;
   background-color: #222222;
@@ -154,4 +162,135 @@ legend, h1{
 .notice p{
   word-wrap: break-word;
   margin: 0px;
+}
+
+
+/*new stuff*/
+
+#sidebar{
+  height: 100%;
+  color: black;
+  background: white;
+  width: 0px;
+  position: fixed;
+  padding-top: 10px; 
+  text-align: center;
+  transition: 0.2s;
+  left: 0;
+  display: none;
+}
+
+#sidebar input[type = "text"]{
+  min-width: 90%;
+}
+
+#sidebar legend{
+  margin-top: 10px;
+  font-size: 100%
+}
+
+#sidebar h1, legend{
+  border-radius: 0px;
+}
+
+#sidebar button{
+  margin-bottom:0px;
+}
+
+#sidebarButton{
+  background: #222222;
+  border: none;
+  height: auto;
+  padding: 10px;
+  margin-left: 8px;
+  margin-right: 100%;
+  margin-top: 70px;
+}
+
+#sidebarButton:hover{
+  background:white;
+}
+
+#mapOverlayOptions{
+  text-align: left;
+  padding-left: 25px;
+}
+
+.map{
+ height: calc(100vh - 48px);
+ transition: 0.2s;
+}
+
+.map button {
+  width: auto;
+  min-width: auto;
+  background-color: #f1f1f1;
+  float: center;
+  border: 1px solid #ccc;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 13;
+  transition: 0.3s;
+}
+
+
+/*------------------Popups------------------*/
+.ol-popup {
+  display: none;
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 280px;
+}
+
+.ol-popup:after, .ol-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.ol-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+
+.ol-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+
+.ol-popup-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  right: 8px;
+}
+
+.ol-popup-closer:after {
+  content: "✖";
+}
+
+.ol-popup-magn {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  left: 8px;
+}
+
+.ol-popup-magn:after {
+  content: "🔎";
 }
